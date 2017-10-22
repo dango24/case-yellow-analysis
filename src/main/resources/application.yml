@@ -1,0 +1,18 @@
+# Server Port
+server.port : 8080
+
+# Profiles
+spring.profiles.active: prod
+
+# Google Vision Service
+google_vision_url : https://vision.googleapis.com/
+google_vision_key : AIzaSyBrkKNc_7vNBvlY6P83atDavKvZGJKQTms
+
+hot_location: Mbps
+bezeq_location: Mb/s
+ookla_location: Mbps
+
+imgParsersIdentifiers:
+ hot: hotImageParser
+ ookla: ooklaImageParser
+ bezeq: bezeqImageParser
