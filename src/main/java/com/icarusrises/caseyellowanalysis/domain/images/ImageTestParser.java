@@ -1,5 +1,6 @@
 package com.icarusrises.caseyellowanalysis.domain.images;
 
+import com.icarusrises.caseyellowanalysis.domain.analyzer.model.WordData;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.services.ImageAnalyzerService;
 import com.icarusrises.caseyellowanalysis.exceptions.SpeedTestParserException;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;
@@ -18,6 +19,22 @@ public abstract class ImageTestParser implements SpeedTestParser {
     @Autowired
     private void setImageAnalyzerService(ImageAnalyzerService imageAnalyzerService) {
         this.imageAnalyzerService = imageAnalyzerService;
+    }
+
+    protected double parseSpeedTestByPostLocation(String postLocationIdentifier, Map<String, String> data) throws IOException {
+        int resultPostLocationIndex;
+        validateData(data);
+        File imgFile = new File(data.get("file"));
+
+        try {
+            OcrResponse ocrResponse = parseImage(imgFile);
+            resultPostLocationIndex = ocrResponse.getTextAnnotations().indexOf(new WordData(postLocationIdentifier));
+
+            return Double.valueOf(ocrResponse.getTextAnnotations().get(resultPostLocationIndex -1).getDescription());
+
+        } catch (Exception e) {
+            throw new SpeedTestParserException("Failed to parse bezeq image, " + e.getMessage(), e);
+        }
     }
 
     protected OcrResponse parseImage(File imgFile) throws IOException {

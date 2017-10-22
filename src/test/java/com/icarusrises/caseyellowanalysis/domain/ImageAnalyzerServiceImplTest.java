@@ -83,7 +83,8 @@ public class ImageAnalyzerServiceImplTest {
     public void analyzeOoklaImage() throws Exception {
         File imgFile = getImgFromResources(OOKLA_IMG_LOCATION);
         OcrResponse ocrResponse = imageAnalyzerService.analyzeImage(imgFile);
-        assertEquals(163, ocrResponse.getTextAnnotations().size());
+        int ocrResponseSize = ocrResponse.getTextAnnotations().size();
+        assertTrue(164 >= ocrResponseSize && ocrResponseSize >= 160);
 
         Set<String> words =
                 ocrResponse.getTextAnnotations()
