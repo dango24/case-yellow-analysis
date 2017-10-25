@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 @ActiveProfiles("dev")
 public class HotImageParserTest {
 
-    private static final String HOT_IMG_LOCATION = "/images/hot_0_screenshot.png";
+    private static final String HOT_IMG_LOCATION = "/images/hot_0_screenshot.PNG";
 
     private HotImageParser hotImageParser;
 

@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 @ActiveProfiles("dev")
 public class BezeqImageParserTest {
 
-    private static final String BEZEQ_IMG_LOCATION = "/images/bezeq_0_screenshot.png";
+    private static final String BEZEQ_IMG_LOCATION = "/images/bezeq_0_screenshot.PNG";
 
     private BezeqImageParser bezeqImageParser;
 

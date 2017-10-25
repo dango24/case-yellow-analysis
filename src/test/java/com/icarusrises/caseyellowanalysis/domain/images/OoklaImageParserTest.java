@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 @ActiveProfiles("dev")
 public class OoklaImageParserTest {
 
-    private static final String OOKLA_IMG_LOCATION = "/images/ookla_0_screenshot.png";
+    private static final String OOKLA_IMG_LOCATION = "/images/ookla_0_screenshot.PNG";
 
     private OoklaImageParser ooklaImageParser;
 

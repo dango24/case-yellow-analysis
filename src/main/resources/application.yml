@@ -22,15 +22,15 @@ imgParsersIdentifiers:
  ookla: ooklaImageParser
  bezeq: bezeqImageParser
 
- # Logger
- log.dir: /home/ec2-user/case-yellow-analysis
+# Logger
+log.dir: /home/ec2-user/case-yellow-analysis
 
- logging:
-   level:
-     org.springframework.web: ERROR
-     caseyellow.server.gateway: INFO
-     org.hibernate: INFO
-   pattern:
-     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] - %-5p %c{1}:%L - %m%n"
-     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] - %-5p %c{1}:%L - %m%n"
-   file: ${log.dir}/logs/case_yellow_central_log.log
+logging:
+ level:
+   org.springframework.web: ERROR
+   caseyellow.server.gateway: INFO
+   org.hibernate: INFO
+ pattern:
+   console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] - %-5p %c{1}:%L - %m%n"
+   file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] - %-5p %c{1}:%L - %m%n"
+ file: ${log.dir}/logs/case_yellow_central_log.log

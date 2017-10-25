@@ -33,9 +33,9 @@ import static org.junit.Assert.assertTrue;
 @ActiveProfiles("dev")
 public class ImageAnalyzerServiceImplTest {
 
-    private static final String HOT_IMG_LOCATION = "/images/hot_0_screenshot.png";
-    private static final String BEZEQ_IMG_LOCATION = "/images/bezeq_0_screenshot.png";
-    private static final String OOKLA_IMG_LOCATION = "/images/ookla_0_screenshot.png";
+    private static final String HOT_IMG_LOCATION = "/images/hot_0_screenshot.PNG";
+    private static final String BEZEQ_IMG_LOCATION = "/images/bezeq_0_screenshot.PNG";
+    private static final String OOKLA_IMG_LOCATION = "/images/ookla_0_screenshot.PNG";
 
     private File imageFile;
     private ImageAnalyzerService imageAnalyzerService;
