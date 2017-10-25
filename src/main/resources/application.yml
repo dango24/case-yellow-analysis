@@ -1,5 +1,5 @@
 # Server Port
-server.port : 8080
+server.port : 8088
 
 # Profiles
 spring.profiles.active: prod
@@ -8,6 +8,11 @@ spring.profiles.active: prod
 google_vision_url : https://vision.googleapis.com/
 google_vision_key : AIzaSyBrkKNc_7vNBvlY6P83atDavKvZGJKQTms
 
+# MultiPart properties
+spring.http.multipart.max-file-size: 5MB
+spring.http.multipart.max-request-size: 20MB
+
+# Identifiers Meta Data
 hot_location: Mbps
 bezeq_location: Mb/s
 ookla_location: Mbps
@@ -16,3 +21,16 @@ imgParsersIdentifiers:
  hot: hotImageParser
  ookla: ooklaImageParser
  bezeq: bezeqImageParser
+
+ # Logger
+ log.dir: /home/ec2-user/case-yellow-analysis
+
+ logging:
+   level:
+     org.springframework.web: ERROR
+     caseyellow.server.gateway: INFO
+     org.hibernate: INFO
+   pattern:
+     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] - %-5p %c{1}:%L - %m%n"
+     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] - %-5p %c{1}:%L - %m%n"
+   file: ${log.dir}/logs/case_yellow_central_log.log

@@ -2,8 +2,9 @@ package com.icarusrises.caseyellowanalysis.domain.analyzer.model;
 
 public class AnalyzedImage {
 
-    private boolean analyzed;
     private double result;
+    private String message;
+    private boolean analyzed;
 
     public AnalyzedImage() {
         this(-1);
@@ -14,12 +15,17 @@ public class AnalyzedImage {
     }
 
     public AnalyzedImage(double result) {
-        this(true, result);
+        this(result, "SUCCESS", true);
     }
 
     public AnalyzedImage(boolean analyzed, double result) {
-        this.analyzed = analyzed;
+        this(result, "SUCCESS", analyzed);
+    }
+
+    public AnalyzedImage(double result, String message, boolean analyzed) {
         this.result = result;
+        this.message = message;
+        this.analyzed = analyzed;
     }
 
     public boolean isAnalyzed() {
@@ -36,5 +42,9 @@ public class AnalyzedImage {
 
     public void setResult(double result) {
         this.result = result;
+    }
+
+    public static AnalyzedImage AnalyzedImageFailure(String message) {
+        return new AnalyzedImage(-1, message, false);
     }
 }

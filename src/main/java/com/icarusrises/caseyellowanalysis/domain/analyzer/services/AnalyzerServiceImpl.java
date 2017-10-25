@@ -21,8 +21,8 @@ public class AnalyzerServiceImpl implements AnalyzerService {
     }
 
     @Override
-    public AnalyzedImage analyzeImage(String identifier, Map<String, String> data) throws IOException {
-        SpeedTestParser speedTestParser = speedTestParserSupplier.getSpeedTestParser(identifier);
+    public AnalyzedImage analyzeImage(Map<String, String> data) throws IOException {
+        SpeedTestParser speedTestParser = speedTestParserSupplier.getSpeedTestParser(data.get("identifier"));
         double result = speedTestParser.parseSpeedTest(data);
 
         return new AnalyzedImage(result);
