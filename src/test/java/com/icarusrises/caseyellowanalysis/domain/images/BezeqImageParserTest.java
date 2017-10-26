@@ -2,6 +2,7 @@ package com.icarusrises.caseyellowanalysis.domain.images;
 
 import com.icarusrises.caseyellowanalysis.CaseYellowAnalysisApplication;
 import com.icarusrises.caseyellowanalysis.commons.Utils;
+import com.icarusrises.caseyellowanalysis.domain.images.services.BezeqImageParser;
 import com.icarusrises.caseyellowanalysis.exceptions.SpeedTestParserException;
 import org.junit.Test;
 import org.junit.runner.RunWith;

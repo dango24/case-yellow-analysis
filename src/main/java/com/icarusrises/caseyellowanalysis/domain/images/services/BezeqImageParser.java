@@ -1,4 +1,4 @@
-package com.icarusrises.caseyellowanalysis.domain.images;
+package com.icarusrises.caseyellowanalysis.domain.images.services;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

@@ -15,7 +15,8 @@ spring.http.multipart.max-request-size: 20MB
 # Identifiers Meta Data
 hot_location: Mbps
 bezeq_location: Mb/s
-ookla_location: Mbps
+ookla_identifier: Mbps
+ookla_identifier_count: 2
 
 imgParsersIdentifiers:
  hot: hotImageParser

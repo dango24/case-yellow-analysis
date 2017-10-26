@@ -1,4 +1,4 @@
-package com.icarusrises.caseyellowanalysis.domain.images;
+package com.icarusrises.caseyellowanalysis.domain.images.services;
 
 import com.icarusrises.caseyellowanalysis.domain.analyzer.model.WordData;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.services.ImageAnalyzerService;

@@ -1,4 +1,4 @@
-package com.icarusrises.caseyellowanalysis.domain.images;
+package com.icarusrises.caseyellowanalysis.domain.images.services;
 
 import java.io.IOException;
 import java.util.Map;

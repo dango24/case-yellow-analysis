@@ -2,6 +2,7 @@ package com.icarusrises.caseyellowanalysis.domain.images;
 
 import com.icarusrises.caseyellowanalysis.CaseYellowAnalysisApplication;
 import com.icarusrises.caseyellowanalysis.commons.Utils;
+import com.icarusrises.caseyellowanalysis.domain.images.services.OoklaImageParser;
 import com.icarusrises.caseyellowanalysis.exceptions.SpeedTestParserException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +22,9 @@ import static org.junit.Assert.assertEquals;
 @ActiveProfiles("dev")
 public class OoklaImageParserTest {
 
-    private static final String OOKLA_IMG_LOCATION = "/images/ookla_0_screenshot.PNG";
+    private static final String OOKLA_IMG_LOCATION_1 = "/images/ookla_0_screenshot.PNG";
+    private static final String OOKLA_IMG_LOCATION_2 = "/images/ookla_1_screenshot.PNG";
+    private static final String OOKLA_IMG_LOCATION_3 = "/images/ookla_2_screenshot.PNG";
 
     private OoklaImageParser ooklaImageParser;
 
@@ -54,12 +57,28 @@ public class OoklaImageParserTest {
         ooklaImageParser.parseSpeedTest(map);
     }
 
-    @Test
-    public void parseSpeedTest() throws Exception {
+    @Test(expected = SpeedTestParserException.class)
+    public void parseSpeedTest1() throws Exception {
         Map<String, String> map = new HashMap<>();
-        map.put("file", Utils.getImgFromResources(OOKLA_IMG_LOCATION).getAbsolutePath());
+        map.put("file", Utils.getImgFromResources(OOKLA_IMG_LOCATION_1).getAbsolutePath());
 
         assertEquals(String.valueOf(31.23), String.valueOf(ooklaImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest2() throws Exception {
+        Map<String, String> map = new HashMap<>();
+        map.put("file", Utils.getImgFromResources(OOKLA_IMG_LOCATION_2).getAbsolutePath());
+
+        assertEquals(String.valueOf(38.87), String.valueOf(ooklaImageParser.parseSpeedTest(map)));
+    }
+
+    @Test(expected = SpeedTestParserException.class)
+    public void parseSpeedTest3() throws Exception {
+        Map<String, String> map = new HashMap<>();
+        map.put("file", Utils.getImgFromResources(OOKLA_IMG_LOCATION_3).getAbsolutePath());
+
+        assertEquals(String.valueOf(40.37), String.valueOf(ooklaImageParser.parseSpeedTest(map)));
     }
 
 }
