@@ -62,8 +62,12 @@ public class OoklaImageParser extends ImageTestParser {
     }
 
     private void validateResults(WordResult firstWordResult, WordResult lastWordResult) {
+        if (firstWordResult.getCentralizedLocation().getX() > lastWordResult.getCentralizedLocation().getX()) {
+            validateResults(lastWordResult, firstWordResult);
+        }
+
         double firstResult = Double.valueOf(firstWordResult.getDescription());
-        double LastResult = Double.valueOf(firstWordResult.getDescription());
+        double lastResult = Double.valueOf(firstWordResult.getDescription());
 
         if (Math.abs(firstWordResult.getCentralizedLocation().getX() -
                      lastWordResult.getCentralizedLocation().getX()) < 100) {

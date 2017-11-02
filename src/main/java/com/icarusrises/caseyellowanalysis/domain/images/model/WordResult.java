@@ -30,4 +30,12 @@ public class WordResult {
     public void setCentralizedLocation(Point centralizedLocation) {
         this.centralizedLocation = centralizedLocation;
     }
+
+    @Override
+    public String toString() {
+        return "WordResult{" +
+                "description='" + description + '\'' +
+                ", centralizedLocation=" + centralizedLocation +
+                '}';
+    }
 }
