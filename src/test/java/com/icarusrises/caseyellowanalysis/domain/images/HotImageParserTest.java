@@ -26,6 +26,9 @@ public class HotImageParserTest {
     private static final String HOT_IMG_LOCATION_1 = "/images/hot_1_screenshot.PNG";
     private static final String HOT_IMG_LOCATION_2 = "/images/hot_2_screenshot.PNG";
     private static final String HOT_IMG_LOCATION_3 = "/images/hot_3_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_4 = "/images/hot_4_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_5 = "/images/hot_5_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_6 = "/images/hot_6_screenshot.PNG";
 
     private HotImageParser hotImageParser;
 
@@ -88,6 +91,30 @@ public class HotImageParserTest {
         map.put("file", Utils.getImgFromResources(HOT_IMG_LOCATION_3).getAbsolutePath());
 
         assertEquals(String.valueOf(41.81), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest4() throws Exception {
+        Map<String, String> map = new HashMap<>();
+        map.put("file", Utils.getImgFromResources(HOT_IMG_LOCATION_4).getAbsolutePath());
+
+        assertEquals(String.valueOf(35.44), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest5() throws Exception {
+        Map<String, String> map = new HashMap<>();
+        map.put("file", Utils.getImgFromResources(HOT_IMG_LOCATION_5).getAbsolutePath());
+
+        assertEquals(String.valueOf(37.04), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest6() throws Exception {
+        Map<String, String> map = new HashMap<>();
+        map.put("file", Utils.getImgFromResources(HOT_IMG_LOCATION_6).getAbsolutePath());
+
+        assertEquals(String.valueOf(38.92), String.valueOf(hotImageParser.parseSpeedTest(map)));
     }
 
 }
