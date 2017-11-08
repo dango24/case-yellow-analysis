@@ -28,6 +28,8 @@ public class BezeqImageParserTest {
     private static final String BEZEQ_IMG_LOCATION_3 = "/images/bezeq_3_screenshot.PNG";
     private static final String BEZEQ_IMG_LOCATION_4 = "/images/bezeq_4_screenshot.PNG";
     private static final String BEZEQ_IMG_LOCATION_5 = "/images/bezeq_5_screenshot.PNG";
+    private static final String BEZEQ_IMG_LOCATION_6 = "/images/bezeq_6_screenshot.PNG";
+    private static final String BEZEQ_IMG_LOCATION_7 = "/images/bezeq_7_screenshot.PNG";
 
     private BezeqImageParser bezeqImageParser;
 
@@ -106,6 +108,22 @@ public class BezeqImageParserTest {
         map.put("file", Utils.getImgFromResources(BEZEQ_IMG_LOCATION_5).getAbsolutePath());
 
         assertEquals(String.valueOf(37.0), String.valueOf(bezeqImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest6() throws Exception {
+        Map<String, String> map = new HashMap<>();
+        map.put("file", Utils.getImgFromResources(BEZEQ_IMG_LOCATION_6).getAbsolutePath());
+
+        assertEquals(String.valueOf(21.6), String.valueOf(bezeqImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest7() throws Exception {
+        Map<String, String> map = new HashMap<>();
+        map.put("file", Utils.getImgFromResources(BEZEQ_IMG_LOCATION_7).getAbsolutePath());
+
+        assertEquals(String.valueOf(46.6), String.valueOf(bezeqImageParser.parseSpeedTest(map)));
     }
 
 }

@@ -1,7 +1,9 @@
 package com.icarusrises.caseyellowanalysis.domain.images.services;
 
+import com.icarusrises.caseyellowanalysis.commons.ImageUtils;
+import com.icarusrises.caseyellowanalysis.commons.WordUtils;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.model.WordData;
-import com.icarusrises.caseyellowanalysis.domain.images.model.WordResult;
+import com.icarusrises.caseyellowanalysis.domain.images.model.PinnedWord;
 import com.icarusrises.caseyellowanalysis.exceptions.SpeedTestParserException;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;
 import org.apache.log4j.Logger;
@@ -10,15 +12,21 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static java.util.Comparator.comparing;
+import static org.apache.commons.lang3.math.NumberUtils.isCreatable;
+
 @Component
 public class OoklaImageParser extends ImageTestParser {
 
     private Logger logger = Logger.getLogger(OoklaImageParser.class);
+
+    private static final String NEGATIVE_FLAG = "parseInNegativeMode";
 
     @Value("${ookla_identifier}")
     private String ooklaIdentifier;
@@ -31,29 +39,37 @@ public class OoklaImageParser extends ImageTestParser {
         validateData(data);
         File imgFile = new File(data.get("file"));
         List<WordData> ooklaIdentifiers;
+        data = addOoklaData(data);
 
         try {
-            OcrResponse ocrResponse = parseImage(imgFile);
+            OcrResponse ocrResponse = parseImage(ImageUtils.convertToNegative(imgFile));
             logger.info("successfully retrieve ocr response");
 
             ooklaIdentifiers =
                 IntStream.range(0, ocrResponse.getTextAnnotations().size())
                          .filter(index -> ocrResponse.getTextAnnotations().get(index).getDescription().equals(ooklaIdentifier))
-                         .mapToObj(index -> ocrResponse.getTextAnnotations().get(index -1))
+                         .mapToObj(index -> ocrResponse.getTextAnnotations().get(index))
                          .collect(Collectors.toList());
 
             if (ooklaIdentifiers.size() != ooklaIdentifierCount) {
-                throw new IllegalStateException("The number of found identifiers is not match for identifier: " +
-                                                ooklaIdentifier + " expected: " + ooklaIdentifierCount +
-                                                ", actual: " + ooklaIdentifiers.size());
+                return handleCountMisMatch(ooklaIdentifiers, data);
             }
 
-            WordResult firstWordResult = WordUtils.createWordResult(ooklaIdentifiers.get(0));
-            WordResult lastWordResult = WordUtils.createWordResult(ooklaIdentifiers.get(1));
+            PinnedWord pinnedWord = retrieveLeftResult(ooklaIdentifiers.get(0), ooklaIdentifiers.get(1));
 
-            validateResults(firstWordResult, lastWordResult);
+            List<PinnedWord> floatLocationsInText =
+                ocrResponse.getTextAnnotations()
+                           .stream()
+                           .filter(word -> isCreatable(word.getDescription()))
+                           .map(WordUtils::createPinnedWord)
+                           .sorted(comparing(word -> WordUtils.euclideanDistance(word.getCentralizedLocation(), pinnedWord.getCentralizedLocation())))
+                           .collect(Collectors.toList());
 
-            return getDownloadResult(firstWordResult, lastWordResult);
+        if (floatLocationsInText.isEmpty()) {
+            throw new SpeedTestParserException("Failed to parse image, No numbers found");
+        }
+
+        return Double.valueOf(floatLocationsInText.get(0).getDescription()); // retrieve the closest word to ookla identifier
 
         } catch (Exception e) {
             logger.error("Failed to parse image, " + e.getMessage(), e);
@@ -61,26 +77,45 @@ public class OoklaImageParser extends ImageTestParser {
         }
     }
 
-    private void validateResults(WordResult firstWordResult, WordResult lastWordResult) {
-        if (firstWordResult.getCentralizedLocation().getX() > lastWordResult.getCentralizedLocation().getX()) {
-            validateResults(lastWordResult, firstWordResult);
+    private Map<String,String> addOoklaData(Map<String, String> data) {
+        Map<String, String> newData = new HashMap<>(data);
+
+        if (data.containsKey(NEGATIVE_FLAG)) {
+            newData.put(NEGATIVE_FLAG, "true");
+        } else {
+            newData.put(NEGATIVE_FLAG, "false");
         }
 
-        double firstResult = Double.valueOf(firstWordResult.getDescription());
-        double lastResult = Double.valueOf(firstWordResult.getDescription());
+        return newData;
+    }
 
-        if (Math.abs(firstWordResult.getCentralizedLocation().getX() -
-                     lastWordResult.getCentralizedLocation().getX()) < 100) {
-
-            throw new SpeedTestParserException("Failed to parse image, the distance between the two point is suspiciously close.");
+    private OcrResponse parseImage(File imgFile, Map<String, String> data) throws IOException {
+        if (data.get(NEGATIVE_FLAG).equals("true")) {
+            return parseImage(ImageUtils.convertToNegative(imgFile));
+        } else {
+            return parseImage(imgFile);
         }
     }
 
-    private double getDownloadResult(WordResult firstWordResult, WordResult lastWordResult) {
-        if (firstWordResult.getCentralizedLocation().getX() > lastWordResult.getCentralizedLocation().getX()) {
-            return getDownloadResult(lastWordResult, firstWordResult);
+    private double handleCountMisMatch(List<WordData> ooklaIdentifiers, Map<String, String> data) throws IOException {
+        if (data.get(NEGATIVE_FLAG).equals("false")) {
+            return parseSpeedTest(data);
         }
 
-        return Double.valueOf(firstWordResult.getDescription());
+        throw new IllegalStateException("The number of found identifiers is not match for identifier: " +
+                                        ooklaIdentifier + " expected: " + ooklaIdentifierCount +
+                                        ", actual: " + ooklaIdentifiers.size());
     }
+
+    private PinnedWord retrieveLeftResult(WordData leftWordResult, WordData rightWordResult) {
+        PinnedWord firstPinnedWord = WordUtils.createPinnedWord(leftWordResult);
+        PinnedWord lastPinnedWord = WordUtils.createPinnedWord(rightWordResult);
+
+        if (firstPinnedWord.getCentralizedLocation().getX() > lastPinnedWord.getCentralizedLocation().getX()) {
+            return retrieveLeftResult(rightWordResult, leftWordResult);
+        }
+
+        return firstPinnedWord;
+    }
+
 }

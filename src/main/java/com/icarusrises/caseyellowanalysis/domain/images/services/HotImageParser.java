@@ -1,7 +1,9 @@
 package com.icarusrises.caseyellowanalysis.domain.images.services;
 
+import com.icarusrises.caseyellowanalysis.commons.ImageUtils;
+import com.icarusrises.caseyellowanalysis.commons.WordUtils;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.model.WordData;
-import com.icarusrises.caseyellowanalysis.domain.images.model.WordResult;
+import com.icarusrises.caseyellowanalysis.domain.images.model.PinnedWord;
 import com.icarusrises.caseyellowanalysis.exceptions.SpeedTestParserException;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;
 import org.apache.log4j.Logger;
@@ -14,6 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static java.util.Comparator.comparing;
+import static org.apache.commons.lang3.math.NumberUtils.isCreatable;
 
 @Component
 public class HotImageParser extends ImageTestParser {
@@ -30,30 +35,39 @@ public class HotImageParser extends ImageTestParser {
     public double parseSpeedTest(Map<String, String> data) throws IOException {
         validateData(data);
         File imgFile = new File(data.get("file"));
-        List<WordData> ooklaIdentifiers;
+        List<WordData> hotIdentifiers;
 
         try {
             OcrResponse ocrResponse = parseImage(imgFile);
             logger.info("successfully retrieve ocr response");
 
-            ooklaIdentifiers =
+            hotIdentifiers =
                     IntStream.range(0, ocrResponse.getTextAnnotations().size())
                             .filter(index -> ocrResponse.getTextAnnotations().get(index).getDescription().equals(hotIdentifier))
-                            .mapToObj(index -> ocrResponse.getTextAnnotations().get(index - 1))
+                            .mapToObj(index -> ocrResponse.getTextAnnotations().get(index))
                             .collect(Collectors.toList());
 
-            if (ooklaIdentifiers.size() != hotIdentifierCount) {
+            if (hotIdentifiers.size() != hotIdentifierCount) {
                 throw new IllegalStateException("The number of found identifiers is not match for identifier: " +
                         hotIdentifier + " expected: " + hotIdentifierCount +
-                        ", actual: " + ooklaIdentifiers.size());
+                        ", actual: " + hotIdentifiers.size());
             }
 
-            WordResult firstWordResult = WordUtils.createWordResult(ooklaIdentifiers.get(0));
-            WordResult lastWordResult = WordUtils.createWordResult(ooklaIdentifiers.get(1));
+            PinnedWord pinnedWord = retrieveLeftResult(hotIdentifiers.get(0), hotIdentifiers.get(1));
 
-            validateResults(firstWordResult, lastWordResult);
+            List<PinnedWord> floatLocationsInText =
+                    ocrResponse.getTextAnnotations()
+                            .stream()
+                            .filter(word -> isCreatable(word.getDescription()))
+                            .map(WordUtils::createPinnedWord)
+                            .sorted(comparing(word -> WordUtils.euclideanDistance(word.getCentralizedLocation(), pinnedWord.getCentralizedLocation())))
+                            .collect(Collectors.toList());
 
-            return Double.valueOf(firstWordResult.getDescription());
+            if (floatLocationsInText.isEmpty()) {
+                throw new SpeedTestParserException("Failed to parse image, No numbers found");
+            }
+
+            return Double.valueOf(floatLocationsInText.get(0).getDescription()); // retrieve the closest word to hot identifier
 
         } catch (Exception e) {
             logger.error("Failed to parse image, " + e.getMessage(), e);
@@ -61,22 +75,15 @@ public class HotImageParser extends ImageTestParser {
         }
     }
 
-    private void validateResults(WordResult firstWordResult, WordResult lastWordResult) {
-        if (firstWordResult.getCentralizedLocation().getX() > lastWordResult.getCentralizedLocation().getX()) {
-            throw new SpeedTestParserException("Failed to parse image, the download rate point is right from the upload rate.");
+    private PinnedWord retrieveLeftResult(WordData leftWordResult, WordData rightWordResult) {
+        PinnedWord firstPinnedWord = WordUtils.createPinnedWord(leftWordResult);
+        PinnedWord lastPinnedWord = WordUtils.createPinnedWord(rightWordResult);
+
+        if (firstPinnedWord.getCentralizedLocation().getX() > lastPinnedWord.getCentralizedLocation().getX()) {
+            return retrieveLeftResult(rightWordResult, leftWordResult);
         }
 
-        double firstResult = Double.valueOf(firstWordResult.getDescription());
-        double lastResult = Double.valueOf(firstWordResult.getDescription());
-
-        if (Math.abs(firstWordResult.getCentralizedLocation().getX() -
-                lastWordResult.getCentralizedLocation().getX()) < 100) {
-
-            throw new SpeedTestParserException("Failed to parse image, the distance between the two point is suspiciously close.");
-
-        } else if (firstResult < lastResult) {
-            throw new SpeedTestParserException("Failed to parse image, the download rate is less than upload speed, " +
-                    "Download WordResult: " + firstWordResult + ", Upload WordResult: " + lastWordResult);
-        }
+        return firstPinnedWord;
     }
+
 }

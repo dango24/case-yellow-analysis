@@ -18,14 +18,6 @@ import static java.util.Objects.isNull;
 
 public interface Utils {
 
-    static byte[] createImageBase64Encode(String imgPath) throws IOException {
-        File imageFile = new File(imgPath);
-        byte[] imageBase64Encode = Base64.getEncoder().encode(FileUtils.readFileToByteArray(imageFile));
-
-        return imageBase64Encode;
-    }
-
-
     static File getImgFromResources(String path) throws IOException {
         InputStream resourceAsStream = Utils.class.getResourceAsStream(path);
         BufferedImage image = ImageIO.read(resourceAsStream);

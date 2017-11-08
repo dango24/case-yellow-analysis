@@ -2,15 +2,15 @@ package com.icarusrises.caseyellowanalysis.domain.images.model;
 
 import com.icarusrises.caseyellowanalysis.domain.analyzer.model.Point;
 
-public class WordResult {
+public class PinnedWord {
 
     private String description;
     private Point centralizedLocation;
 
-    public WordResult() {
+    public PinnedWord() {
     }
 
-    public WordResult(String description, Point centralizedLocation) {
+    public PinnedWord(String description, Point centralizedLocation) {
         this.description = description;
         this.centralizedLocation = centralizedLocation;
     }
@@ -33,7 +33,7 @@ public class WordResult {
 
     @Override
     public String toString() {
-        return "WordResult{" +
+        return "PinnedWord{" +
                 "description='" + description + '\'' +
                 ", centralizedLocation=" + centralizedLocation +
                 '}';

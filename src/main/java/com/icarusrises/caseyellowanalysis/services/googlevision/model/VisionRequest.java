@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.icarusrises.caseyellowanalysis.commons.Utils.createImageBase64Encode;
+import static com.icarusrises.caseyellowanalysis.commons.ImageUtils.createImageBase64Encode;
+
 
 public class VisionRequest {
 

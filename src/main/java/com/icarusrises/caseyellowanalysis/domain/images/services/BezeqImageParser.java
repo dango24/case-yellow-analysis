@@ -1,7 +1,8 @@
 package com.icarusrises.caseyellowanalysis.domain.images.services;
 
+import com.icarusrises.caseyellowanalysis.commons.WordUtils;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.model.WordData;
-import com.icarusrises.caseyellowanalysis.domain.images.model.WordResult;
+import com.icarusrises.caseyellowanalysis.domain.images.model.PinnedWord;
 import com.icarusrises.caseyellowanalysis.exceptions.SpeedTestParserException;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;
 import org.apache.log4j.Logger;
@@ -12,11 +13,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.icarusrises.caseyellowanalysis.domain.images.services.WordUtils.createWordResult;
+import static com.icarusrises.caseyellowanalysis.commons.WordUtils.createPinnedWord;
+import static java.util.Comparator.comparing;
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.groupingBy;
+import static org.apache.commons.lang3.math.NumberUtils.isCreatable;
 
 
 @Component
@@ -34,25 +38,37 @@ public class BezeqImageParser extends ImageTestParser {
     public double parseSpeedTest(Map<String, String> data) throws IOException {
         validateData(data);
         File imgFile = new File(data.get("file"));
-        Map<String, List<WordData>> ooklaIdentifiers;
+        Map<String, List<WordData>> BezeqIdentifiers;
 
         try {
             OcrResponse ocrResponse = parseImage(imgFile);
             logger.info("successfully retrieve ocr response");
 
-            ooklaIdentifiers =
+            BezeqIdentifiers =
                     IntStream.range(0, ocrResponse.getTextAnnotations().size())
                             .filter(index -> ocrResponse.getTextAnnotations().get(index).getDescription().equals(bezeqMbLocation) ||
                                              ocrResponse.getTextAnnotations().get(index).getDescription().equals(bezeqKbLocation))
                             .mapToObj(index -> new WordData(ocrResponse.getTextAnnotations().get(index), index))
                             .collect(groupingBy(WordData::getDescription));
 
-            validateResults(ooklaIdentifiers);
+            validateResults(BezeqIdentifiers);
 
-            WordData MbWordData= ooklaIdentifiers.get(bezeqMbLocation).get(0);
-            WordData MbResult = ocrResponse.getTextAnnotations().get(MbWordData.getIndex() -1);
+            PinnedWord mbPinnedWord = createPinnedWord(BezeqIdentifiers.get(bezeqMbLocation).get(0));
 
-            return Double.valueOf(MbResult.getDescription());
+            List<PinnedWord> floatLocationsInText =
+                    ocrResponse.getTextAnnotations()
+                            .stream()
+                            .filter(word -> isCreatable(word.getDescription()))
+                            .map(WordUtils::createPinnedWord)
+                            .sorted(comparing(word -> WordUtils.euclideanDistance(word.getCentralizedLocation(), mbPinnedWord.getCentralizedLocation())))
+                            .collect(Collectors.toList());
+
+            if (floatLocationsInText.isEmpty()) {
+                throw new SpeedTestParserException("Failed to parse image, No numbers found");
+            }
+
+            return Double.valueOf(floatLocationsInText.get(0).getDescription()); // retrieve the closest word to bezeqmb identifier
+
 
         } catch (Exception e) {
             logger.error("Failed to parse image, " + e.getMessage(), e);
@@ -60,24 +76,24 @@ public class BezeqImageParser extends ImageTestParser {
         }
     }
 
-    private void validateResults(Map<String, List<WordData>> ooklaIdentifiers) {
-        if (ooklaIdentifiers.size() != 2) {
+    private void validateResults(Map<String, List<WordData>> bezeqIdentifiers) {
+        if (bezeqIdentifiers.size() != 2) {
             throw new IllegalStateException("The number of found identifiers does not match for identifiers: " +
-                                            bezeqMbLocation + " and " + bezeqKbLocation + " result is: " + ooklaIdentifiers);
+                                            bezeqMbLocation + " and " + bezeqKbLocation + " result is: " + bezeqIdentifiers);
         }
 
-        if (isNull(ooklaIdentifiers.get(bezeqMbLocation)) || ooklaIdentifiers.get(bezeqMbLocation).size() != 1) {
-            throw new SpeedTestParserException(bezeqMbLocation + " is null or not match the amount of correct identifiers, result: " + ooklaIdentifiers.get(bezeqMbLocation));
+        if (isNull(bezeqIdentifiers.get(bezeqMbLocation)) || bezeqIdentifiers.get(bezeqMbLocation).size() != 1) {
+            throw new SpeedTestParserException(bezeqMbLocation + " is null or not match the amount of correct identifiers, result: " + bezeqIdentifiers.get(bezeqMbLocation));
         }
 
-        if (isNull(ooklaIdentifiers.get(bezeqKbLocation)) || ooklaIdentifiers.get(bezeqKbLocation).size() != 1) {
-            throw new SpeedTestParserException(bezeqKbLocation + " is null or not match the amount of correct identifiers, result: " + ooklaIdentifiers.get(bezeqKbLocation));
+        if (isNull(bezeqIdentifiers.get(bezeqKbLocation)) || bezeqIdentifiers.get(bezeqKbLocation).size() != 1) {
+            throw new SpeedTestParserException(bezeqKbLocation + " is null or not match the amount of correct identifiers, result: " + bezeqIdentifiers.get(bezeqKbLocation));
         }
 
-        WordResult KbWordResult = createWordResult(ooklaIdentifiers.get(bezeqKbLocation).get(0));
-        WordResult MbWordResult = createWordResult(ooklaIdentifiers.get(bezeqMbLocation).get(0));
+        PinnedWord kbPinnedWord = createPinnedWord(bezeqIdentifiers.get(bezeqKbLocation).get(0));
+        PinnedWord mbPinnedWord = createPinnedWord(bezeqIdentifiers.get(bezeqMbLocation).get(0));
 
-        if (KbWordResult.getCentralizedLocation().getX() > MbWordResult.getCentralizedLocation().getX()) {
+        if (kbPinnedWord.getCentralizedLocation().getX() > mbPinnedWord.getCentralizedLocation().getX()) {
             throw new SpeedTestParserException("Failed to parse image, the Kb point is from the right of the Mb point.");
         }
     }
