@@ -4,6 +4,7 @@ import com.icarusrises.caseyellowanalysis.CaseYellowAnalysisApplication;
 import com.icarusrises.caseyellowanalysis.commons.Utils;
 import com.icarusrises.caseyellowanalysis.domain.images.services.OoklaImageParser;
 import com.icarusrises.caseyellowanalysis.exceptions.SpeedTestParserException;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class OoklaImageParserTest {
     private static final String OOKLA_IMG_LOCATION_3 = "/images/ookla_3_screenshot.PNG";
     private static final String OOKLA_IMG_LOCATION_4 = "/images/ookla_4_screenshot.PNG";
     private static final String OOKLA_IMG_LOCATION_5 = "/images/ookla_5_screenshot.PNG";
+    private static final String OOKLA_IMG_LOCATION_6 = "/images/ookla_6_screenshot.PNG";
 
     private OoklaImageParser ooklaImageParser;
 
@@ -106,6 +108,15 @@ public class OoklaImageParserTest {
         map.put("file", Utils.getImgFromResources(OOKLA_IMG_LOCATION_5).getAbsolutePath());
 
         assertEquals(String.valueOf(39.17), String.valueOf(ooklaImageParser.parseSpeedTest(map)));
+    }
+
+    @Ignore
+    @Test
+    public void parseSpeedTest6() throws Exception {
+        Map<String, String> map = new HashMap<>();
+        map.put("file", Utils.getImgFromResources(OOKLA_IMG_LOCATION_6).getAbsolutePath());
+
+        assertEquals(String.valueOf(8.32), String.valueOf(ooklaImageParser.parseSpeedTest(map)));
     }
 
 }
