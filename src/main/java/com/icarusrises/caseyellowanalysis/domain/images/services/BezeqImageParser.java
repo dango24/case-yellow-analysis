@@ -76,6 +76,11 @@ public class BezeqImageParser extends ImageTestParser {
         }
     }
 
+    @Override
+    public String getIdentifier() {
+        return "bezeq";
+    }
+
     private void validateResults(Map<String, List<WordData>> bezeqIdentifiers) {
         if (bezeqIdentifiers.size() != 2) {
             throw new IllegalStateException("The number of found identifiers does not match for identifiers: " +

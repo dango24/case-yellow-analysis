@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +30,15 @@ public class AnalysisController {
     @Autowired
     public void setAnalyzerService(AnalyzerService analyzerService) {
         this.analyzerService = analyzerService;
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("analyze-nonflash")
+    public AnalyzedImage analyzeNonFlash(String identifier, String nonFlashResult) throws IOException {
+        logger.info("Received analyzeNonFlash request for identifier: " + identifier + ", with result: " + nonFlashResult);
+        Map<String, String> data = createNonFlashableData(identifier, nonFlashResult);
+
+        return analyzerService.analyzeImage(data);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -53,6 +63,14 @@ public class AnalysisController {
         Map<String,String> data = new HashMap<>();
         data.put("identifier", identifier);
         data.put("file", imgFile.getAbsolutePath());
+
+        return data;
+    }
+
+    private Map<String, String> createNonFlashableData(String identifier, String nonFlashResult) {
+        Map<String, String> data = new HashMap<>();
+        data.put("nonFlashResult", nonFlashResult);
+        data.put("identifier", identifier);
 
         return data;
     }

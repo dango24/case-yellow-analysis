@@ -1,6 +1,5 @@
 package com.icarusrises.caseyellowanalysis.domain.images.services;
 
-import com.icarusrises.caseyellowanalysis.commons.ImageUtils;
 import com.icarusrises.caseyellowanalysis.commons.WordUtils;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.model.WordData;
 import com.icarusrises.caseyellowanalysis.domain.images.model.PinnedWord;
@@ -73,6 +72,11 @@ public class HotImageParser extends ImageTestParser {
             logger.error("Failed to parse image, " + e.getMessage(), e);
             throw new SpeedTestParserException("Failed to parse image, " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    public String getIdentifier() {
+        return "hot";
     }
 
     private PinnedWord retrieveLeftResult(WordData leftWordResult, WordData rightWordResult) {

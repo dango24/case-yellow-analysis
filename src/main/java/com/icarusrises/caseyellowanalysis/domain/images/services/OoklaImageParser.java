@@ -77,6 +77,11 @@ public class OoklaImageParser extends ImageTestParser {
         }
     }
 
+    @Override
+    public String getIdentifier() {
+        return "ookla";
+    }
+
     private Map<String,String> addOoklaData(Map<String, String> data) {
         Map<String, String> newData = new HashMap<>(data);
 

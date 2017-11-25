@@ -1,12 +1,11 @@
 package com.icarusrises.caseyellowanalysis.domain.analyzer.services;
 
 import com.icarusrises.caseyellowanalysis.domain.analyzer.model.AnalyzedImage;
-import com.icarusrises.caseyellowanalysis.domain.images.services.SpeedTestParser;
-import com.icarusrises.caseyellowanalysis.domain.images.services.SpeedTestParserSupplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service

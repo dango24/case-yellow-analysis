@@ -1,6 +1,8 @@
 package com.icarusrises.caseyellowanalysis.domain.images;
 
 import com.icarusrises.caseyellowanalysis.CaseYellowAnalysisApplication;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.services.SpeedTestParser;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.services.SpeedTestParserSupplier;
 import com.icarusrises.caseyellowanalysis.domain.images.services.*;
 import com.icarusrises.caseyellowanalysis.exceptions.SpeedTestParserException;
 import org.junit.Test;
