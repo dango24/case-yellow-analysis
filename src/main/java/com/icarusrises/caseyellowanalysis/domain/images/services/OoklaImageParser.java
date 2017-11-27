@@ -42,7 +42,7 @@ public class OoklaImageParser extends ImageTestParser {
         data = addOoklaData(data);
 
         try {
-            OcrResponse ocrResponse = parseImage(ImageUtils.convertToNegative(imgFile));
+            OcrResponse ocrResponse = parseImage(imgFile, data);
             logger.info("successfully retrieve ocr response");
 
             ooklaIdentifiers =
