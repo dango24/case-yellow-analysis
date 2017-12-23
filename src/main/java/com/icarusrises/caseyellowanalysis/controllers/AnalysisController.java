@@ -4,6 +4,9 @@ import com.icarusrises.caseyellowanalysis.commons.Utils;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.model.AnalyzedImage;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.services.AnalyzerService;
 import com.icarusrises.caseyellowanalysis.exceptions.AnalyzerException;
+import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
+import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;
+import com.icarusrises.caseyellowanalysis.services.googlevision.services.GoogleVisionService;
 import org.apache.log4j.Logger;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +29,12 @@ public class AnalysisController {
     private Logger logger = Logger.getLogger(AnalysisController.class);
 
     private AnalyzerService analyzerService;
+    private GoogleVisionService googleVisionService;
 
     @Autowired
-    public void setAnalyzerService(AnalyzerService analyzerService) {
+    public AnalysisController(AnalyzerService analyzerService, GoogleVisionService googleVisionService) {
         this.analyzerService = analyzerService;
+        this.googleVisionService = googleVisionService;
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -57,6 +62,12 @@ public class AnalysisController {
             logger.error("Failed to analyze image, " + e.getMessage(), e);
             return AnalyzedImage.AnalyzedImageFailure("Failed to analyze image, " + e.getMessage());
         }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/ocr_request")
+    public OcrResponse ocrRequest(@RequestBody GoogleVisionRequest googleVisionRequest) throws IOException {
+        return googleVisionService.parseImage(googleVisionRequest);
     }
 
     private Map<String,String> createData(String identifier, File imgFile) {

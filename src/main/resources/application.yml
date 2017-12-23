@@ -1,12 +1,13 @@
 # Server Port
-server.port : 8088
+server.port : 7008
 
 # Profiles
 spring.profiles.active: prod
 
 # Google Vision Service
 google_vision_url : https://vision.googleapis.com/
-google_vision_key : AIzaSyBrkKNc_7vNBvlY6P83atDavKvZGJKQTms
+
+central_url: http://localhost:9080
 
 # MultiPart properties
 spring.http.multipart.max-file-size: 5MB

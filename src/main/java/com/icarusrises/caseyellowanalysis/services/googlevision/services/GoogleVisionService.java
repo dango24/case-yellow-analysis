@@ -3,6 +3,7 @@ package com.icarusrises.caseyellowanalysis.services.googlevision.services;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icarusrises.caseyellowanalysis.exceptions.RequestFailureException;
+import com.icarusrises.caseyellowanalysis.services.central.CentralService;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;
 import com.icarusrises.caseyellowanalysis.services.infrastrucre.RequestHandler;
@@ -21,11 +22,14 @@ public class GoogleVisionService implements OcrService {
     @Value("${google_vision_url}")
     private String googleVisionUrl;
 
-    @Value("${google_vision_key}")
-    private String googleVisionKey;
-
     private RequestHandler requestHandler;
+    private CentralService centralService;
     private GoogleVisionRetrofitRequests googleVisionRetrofitRequests;
+
+    @Autowired
+    public GoogleVisionService(CentralService centralService) {
+        this.centralService = centralService;
+    }
 
     @PostConstruct
     public void init() {
@@ -37,12 +41,14 @@ public class GoogleVisionService implements OcrService {
 
     @Override
     public OcrResponse parseImage(String imgPath) throws IOException, RequestFailureException {
+        return parseImage(new GoogleVisionRequest(imgPath));
+    }
 
-        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(imgPath);
+    @Override
+    public OcrResponse parseImage(GoogleVisionRequest googleVisionRequest) throws IOException, RequestFailureException {
+        String googleVisionKey = centralService.googleVisionKey().getGoogleVisionKey();
         JsonNode response = requestHandler.execute(googleVisionRetrofitRequests.ocrRequest(googleVisionKey, googleVisionRequest));
-        OcrResponse ocrData = parseResponse(response);
-
-        return ocrData;
+        return parseResponse(response);
     }
 
     private OcrResponse parseResponse(JsonNode response) throws IOException {
