@@ -5,7 +5,6 @@ import com.icarusrises.caseyellowanalysis.domain.analyzer.services.SpeedTestPars
 import com.icarusrises.caseyellowanalysis.domain.analyzer.services.SpeedTestParserSupplier;
 import com.icarusrises.caseyellowanalysis.domain.images.services.BezeqImageParser;
 import com.icarusrises.caseyellowanalysis.domain.images.services.HotImageParser;
-import com.icarusrises.caseyellowanalysis.domain.images.services.OoklaImageParser;
 import com.icarusrises.caseyellowanalysis.domain.nonflash.AtntNonFlashAnalyzer;
 import com.icarusrises.caseyellowanalysis.domain.nonflash.FastNonFlashAnalyzer;
 import com.icarusrises.caseyellowanalysis.domain.nonflash.SpeedofNonFlashAnalyzer;
@@ -58,12 +57,6 @@ public class AnalyzerSupplierTest {
     public void getBezeqAnalyzer() throws Exception {
         SpeedTestParser speedTestParser = speedTestParserSupplier.getSpeedTestParser("bezeq");
         assertEquals(speedTestParser.getClass(), (BezeqImageParser.class));
-    }
-
-    @Test
-    public void getOoklaAnalyzer() throws Exception {
-        SpeedTestParser speedTestParser = speedTestParserSupplier.getSpeedTestParser("ookla");
-        assertEquals(speedTestParser.getClass(), (OoklaImageParser.class));
     }
 
 }

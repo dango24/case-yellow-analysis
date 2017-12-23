@@ -28,8 +28,8 @@ public class SpeedofNonFlashAnalyzer implements SpeedTestParser {
     }
 
     @Override
-    public double parseSpeedTest(Map<String, String> data) throws IOException {
-        String nonFlashResult = data.get("nonFlashResult");
+    public double parseSpeedTest(Map<String, Object> data) throws IOException {
+        String nonFlashResult = String.valueOf(data.get("nonFlashResult"));
 
         try {
             String patternString = "\\d+(:?\\.\\d+)?";

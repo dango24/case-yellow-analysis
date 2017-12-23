@@ -49,14 +49,6 @@ public class SpeedTestParserSupplierTest {
     }
 
     @Test
-    public void getSpeedTestParserWithOokla() throws Exception {
-        SpeedTestParser speedTestParser = speedTestParserSupplier.getSpeedTestParser(OOKLA_IDENTIFIER);
-
-        assertNotNull(speedTestParser);
-        assertTrue(speedTestParser.getClass().equals(OoklaImageParser.class));
-    }
-
-    @Test
     public void getSpeedTestParserWithBezeq() throws Exception {
         SpeedTestParser speedTestParser = speedTestParserSupplier.getSpeedTestParser(BEZEQ_IDENTIFIER);
 

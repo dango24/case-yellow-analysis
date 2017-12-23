@@ -4,6 +4,7 @@ import com.icarusrises.caseyellowanalysis.commons.WordUtils;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.model.WordData;
 import com.icarusrises.caseyellowanalysis.domain.images.model.PinnedWord;
 import com.icarusrises.caseyellowanalysis.exceptions.SpeedTestParserException;
+import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,13 +36,13 @@ public class BezeqImageParser extends ImageTestParser {
     private String bezeqKbLocation;
 
     @Override
-    public double parseSpeedTest(Map<String, String> data) throws IOException {
+    public double parseSpeedTest(Map<String, Object> data) throws IOException {
         validateData(data);
-        File imgFile = new File(data.get("file"));
+        GoogleVisionRequest googleVisionRequest = (GoogleVisionRequest)data.get("file");
         Map<String, List<WordData>> BezeqIdentifiers;
 
         try {
-            OcrResponse ocrResponse = parseImage(imgFile);
+            OcrResponse ocrResponse = parseImage(googleVisionRequest);
             logger.info("successfully retrieve ocr response");
 
             BezeqIdentifiers =

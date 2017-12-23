@@ -4,12 +4,12 @@ import com.icarusrises.caseyellowanalysis.commons.WordUtils;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.model.WordData;
 import com.icarusrises.caseyellowanalysis.domain.images.model.PinnedWord;
 import com.icarusrises.caseyellowanalysis.exceptions.SpeedTestParserException;
+import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -31,13 +31,13 @@ public class HotImageParser extends ImageTestParser {
     private int hotIdentifierCount;
 
     @Override
-    public double parseSpeedTest(Map<String, String> data) throws IOException {
+    public double parseSpeedTest(Map<String, Object> data) throws IOException {
         validateData(data);
-        File imgFile = new File(data.get("file"));
+        GoogleVisionRequest googleVisionRequest = (GoogleVisionRequest)data.get("file");
         List<WordData> hotIdentifiers;
 
         try {
-            OcrResponse ocrResponse = parseImage(imgFile);
+            OcrResponse ocrResponse = parseImage(googleVisionRequest);
             logger.info("successfully retrieve ocr response");
 
             hotIdentifiers =

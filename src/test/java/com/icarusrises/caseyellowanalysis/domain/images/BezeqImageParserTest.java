@@ -4,6 +4,7 @@ import com.icarusrises.caseyellowanalysis.CaseYellowAnalysisApplication;
 import com.icarusrises.caseyellowanalysis.commons.Utils;
 import com.icarusrises.caseyellowanalysis.domain.images.services.BezeqImageParser;
 import com.icarusrises.caseyellowanalysis.exceptions.SpeedTestParserException;
+import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,78 +51,87 @@ public class BezeqImageParserTest {
 
     @Test(expected = SpeedTestParserException.class)
     public void parseSpeedTestWithoutFile() throws Exception {
-        Map<String, String> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("oren", "efes");
         bezeqImageParser.parseSpeedTest(map);
     }
 
     @Test(expected = SpeedTestParserException.class)
     public void parseSpeedTestWithoutExistFile() throws Exception {
-        Map<String, String> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("file", "oren_efes");
         bezeqImageParser.parseSpeedTest(map);
     }
 
     @Test
     public void parseSpeedTest() throws Exception {
-        Map<String, String> map = new HashMap<>();
-        map.put("file", Utils.getImgFromResources(BEZEQ_IMG_LOCATION_0).getAbsolutePath());
+        Map<String, Object> map = new HashMap<>();
+
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(Utils.getImgFromResources(BEZEQ_IMG_LOCATION_0).getAbsolutePath());
+        map.put("file", googleVisionRequest);
 
         assertEquals(String.valueOf(28.5), String.valueOf(bezeqImageParser.parseSpeedTest(map)));
     }
 
     @Test
     public void parseSpeedTest1() throws Exception {
-        Map<String, String> map = new HashMap<>();
-        map.put("file", Utils.getImgFromResources(BEZEQ_IMG_LOCATION_1).getAbsolutePath());
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(Utils.getImgFromResources(BEZEQ_IMG_LOCATION_1).getAbsolutePath());
+        map.put("file", googleVisionRequest);
 
         assertEquals(String.valueOf(37.5), String.valueOf(bezeqImageParser.parseSpeedTest(map)));
     }
 
     @Test
     public void parseSpeedTest2() throws Exception {
-        Map<String, String> map = new HashMap<>();
-        map.put("file", Utils.getImgFromResources(BEZEQ_IMG_LOCATION_2).getAbsolutePath());
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(Utils.getImgFromResources(BEZEQ_IMG_LOCATION_2).getAbsolutePath());
+        map.put("file", googleVisionRequest);
 
         assertEquals(String.valueOf(35.6), String.valueOf(bezeqImageParser.parseSpeedTest(map)));
     }
 
     @Test
     public void parseSpeedTest3() throws Exception {
-        Map<String, String> map = new HashMap<>();
-        map.put("file", Utils.getImgFromResources(BEZEQ_IMG_LOCATION_3).getAbsolutePath());
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(Utils.getImgFromResources(BEZEQ_IMG_LOCATION_3).getAbsolutePath());
+        map.put("file", googleVisionRequest);
 
         assertEquals(String.valueOf(41.0), String.valueOf(bezeqImageParser.parseSpeedTest(map)));
     }
 
     @Test
     public void parseSpeedTest4() throws Exception {
-        Map<String, String> map = new HashMap<>();
-        map.put("file", Utils.getImgFromResources(BEZEQ_IMG_LOCATION_4).getAbsolutePath());
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(Utils.getImgFromResources(BEZEQ_IMG_LOCATION_4).getAbsolutePath());
+        map.put("file", googleVisionRequest);
 
         assertEquals(String.valueOf(5.1), String.valueOf(bezeqImageParser.parseSpeedTest(map)));
     }
 
     @Test
     public void parseSpeedTest5() throws Exception {
-        Map<String, String> map = new HashMap<>();
-        map.put("file", Utils.getImgFromResources(BEZEQ_IMG_LOCATION_5).getAbsolutePath());
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(Utils.getImgFromResources(BEZEQ_IMG_LOCATION_5).getAbsolutePath());
+        map.put("file", googleVisionRequest);
 
         assertEquals(String.valueOf(37.0), String.valueOf(bezeqImageParser.parseSpeedTest(map)));
     }
 
     @Test
     public void parseSpeedTest6() throws Exception {
-        Map<String, String> map = new HashMap<>();
-        map.put("file", Utils.getImgFromResources(BEZEQ_IMG_LOCATION_6).getAbsolutePath());
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(Utils.getImgFromResources(BEZEQ_IMG_LOCATION_6).getAbsolutePath());
+        map.put("file", googleVisionRequest);
 
         assertEquals(String.valueOf(21.6), String.valueOf(bezeqImageParser.parseSpeedTest(map)));
     }
 
     @Test
     public void parseSpeedTest7() throws Exception {
-        Map<String, String> map = new HashMap<>();
-        map.put("file", Utils.getImgFromResources(BEZEQ_IMG_LOCATION_7).getAbsolutePath());
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(Utils.getImgFromResources(BEZEQ_IMG_LOCATION_7).getAbsolutePath());
+        map.put("file", googleVisionRequest);
 
         assertEquals(String.valueOf(46.6), String.valueOf(bezeqImageParser.parseSpeedTest(map)));
     }

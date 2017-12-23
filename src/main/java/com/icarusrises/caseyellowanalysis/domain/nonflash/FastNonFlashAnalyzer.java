@@ -26,9 +26,9 @@ public class FastNonFlashAnalyzer implements SpeedTestParser {
     }
 
     @Override
-    public double parseSpeedTest(Map<String, String> data) throws IOException {
+    public double parseSpeedTest(Map<String, Object> data) throws IOException {
         try {
-            return Double.valueOf(data.get("nonFlashResult"));
+            return Double.valueOf(String.valueOf(data.get("nonFlashResult")));
 
         } catch (Exception e) {
             throw new AnalyzerException("Failed to analyze fast result with nonFlashResult: " + data.get("nonFlashResult"));

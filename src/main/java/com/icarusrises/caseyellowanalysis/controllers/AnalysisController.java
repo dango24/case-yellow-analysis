@@ -41,20 +41,18 @@ public class AnalysisController {
     @GetMapping("analyze-nonflash")
     public AnalyzedImage analyzeNonFlash(String identifier, String nonFlashResult) throws IOException {
         logger.info("Received analyzeNonFlash request for identifier: " + identifier + ", with result: " + nonFlashResult);
-        Map<String, String> data = createNonFlashableData(identifier, nonFlashResult);
+        Map<String, Object> data = createNonFlashableData(identifier, nonFlashResult);
 
         return analyzerService.analyzeImage(data);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/analyze-image")
-    public AnalyzedImage analyzeImage(@RequestParam("identifier") String identifier, @NotEmpty MultipartRequest request) {
+    public AnalyzedImage analyzeImage(@RequestParam("identifier") String identifier, @RequestBody GoogleVisionRequest googleVisionRequest) {
         logger.info("Received analyzeImage request for identifier: " + identifier);
 
         try {
-            MultipartFile multipartFile = retrieveSinglePart(request);
-            File imgFile = Utils.writeToFile(identifier + "_" + multipartFile.getOriginalFilename(), multipartFile);
-            Map<String, String> data = createData(identifier, imgFile);
+            Map<String, Object> data = createData(identifier, googleVisionRequest);
 
             return analyzerService.analyzeImage(data);
 
@@ -70,16 +68,16 @@ public class AnalysisController {
         return googleVisionService.parseImage(googleVisionRequest);
     }
 
-    private Map<String,String> createData(String identifier, File imgFile) {
-        Map<String,String> data = new HashMap<>();
+    private Map<String, Object> createData(String identifier, GoogleVisionRequest googleVisionRequest) {
+        Map<String,Object> data = new HashMap<>();
         data.put("identifier", identifier);
-        data.put("file", imgFile.getAbsolutePath());
+        data.put("file", googleVisionRequest);
 
         return data;
     }
 
-    private Map<String, String> createNonFlashableData(String identifier, String nonFlashResult) {
-        Map<String, String> data = new HashMap<>();
+    private Map<String, Object> createNonFlashableData(String identifier, String nonFlashResult) {
+        Map<String, Object> data = new HashMap<>();
         data.put("nonFlashResult", nonFlashResult);
         data.put("identifier", identifier);
 

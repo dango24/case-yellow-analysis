@@ -3,6 +3,7 @@ package com.icarusrises.caseyellowanalysis.domain;
 import com.icarusrises.caseyellowanalysis.CaseYellowAnalysisApplication;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.model.WordData;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.services.ImageAnalyzerService;
+import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +45,8 @@ public class ImageAnalyzerServiceImplTest {
     @Test
     public void analyzeHotImage() throws Exception {
         File imgFile = getImgFromResources(HOT_IMG_LOCATION);
-        OcrResponse ocrResponse = imageAnalyzerService.analyzeImage(imgFile);
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(imgFile.getAbsolutePath());
+        OcrResponse ocrResponse = imageAnalyzerService.analyzeImage(googleVisionRequest);
         assertEquals(70, ocrResponse.getTextAnnotations().size());
 
         Map<String, Long> words =
@@ -60,7 +62,8 @@ public class ImageAnalyzerServiceImplTest {
     @Test
     public void analyzeBezeqImage() throws Exception {
         File imgFile = getImgFromResources(BEZEQ_IMG_LOCATION);
-        OcrResponse ocrResponse = imageAnalyzerService.analyzeImage(imgFile);
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(imgFile.getAbsolutePath());
+        OcrResponse ocrResponse = imageAnalyzerService.analyzeImage(googleVisionRequest);
         assertEquals(125, ocrResponse.getTextAnnotations().size());
 
         Set<String> words =
@@ -78,7 +81,8 @@ public class ImageAnalyzerServiceImplTest {
     @Test
     public void analyzeOoklaImage() throws Exception {
         File imgFile = getImgFromResources(OOKLA_IMG_LOCATION);
-        OcrResponse ocrResponse = imageAnalyzerService.analyzeImage(imgFile);
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(imgFile.getAbsolutePath());
+        OcrResponse ocrResponse = imageAnalyzerService.analyzeImage(googleVisionRequest);
         int ocrResponseSize = ocrResponse.getTextAnnotations().size();
         assertTrue(164 >= ocrResponseSize && ocrResponseSize >= 160);
 

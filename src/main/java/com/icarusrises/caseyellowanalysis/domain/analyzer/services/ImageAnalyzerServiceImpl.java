@@ -1,12 +1,11 @@
 package com.icarusrises.caseyellowanalysis.domain.analyzer.services;
 
-import com.icarusrises.caseyellowanalysis.domain.analyzer.model.WordData;
+import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;
 import com.icarusrises.caseyellowanalysis.services.googlevision.services.OcrService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
 
 @Service
@@ -20,7 +19,7 @@ public class ImageAnalyzerServiceImpl implements ImageAnalyzerService {
     }
 
     @Override
-    public OcrResponse analyzeImage(File img) throws IOException {
-        return ocrService.parseImage(img.getAbsolutePath());
+    public OcrResponse analyzeImage(GoogleVisionRequest googleVisionRequest) throws IOException {
+        return ocrService.parseImage(googleVisionRequest);
     }
 }

@@ -19,7 +19,7 @@ public class AtntNonFlashAnalyzerTest {
 
     @Test
     public void analyze() throws Exception {
-        Map<String, String> data = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
         data.put("nonFlashResult", "Your Download speed is 124.9 Mega bits per second and your Upload speed is 6.07Mega bits per second");
         double actualResult = atntNonFlashAnalyzer.parseSpeedTest(data);
 

@@ -8,6 +8,5 @@ import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrRespons
 import java.io.IOException;
 
 public interface OcrService {
-    OcrResponse parseImage(String imgPath) throws IOException, RequestFailureException;
     OcrResponse parseImage(GoogleVisionRequest googleVisionRequest) throws IOException, RequestFailureException;
 }

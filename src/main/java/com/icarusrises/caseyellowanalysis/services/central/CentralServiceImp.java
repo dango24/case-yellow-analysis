@@ -11,7 +11,6 @@ import retrofit2.Retrofit;
 import javax.annotation.PostConstruct;
 
 @Service
-@Profile("prod")
 public class CentralServiceImp implements CentralService {
 
     @Value("${central_url}")

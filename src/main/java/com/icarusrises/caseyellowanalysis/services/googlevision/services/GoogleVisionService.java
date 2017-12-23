@@ -40,11 +40,6 @@ public class GoogleVisionService implements OcrService {
     }
 
     @Override
-    public OcrResponse parseImage(String imgPath) throws IOException, RequestFailureException {
-        return parseImage(new GoogleVisionRequest(imgPath));
-    }
-
-    @Override
     public OcrResponse parseImage(GoogleVisionRequest googleVisionRequest) throws IOException, RequestFailureException {
         String googleVisionKey = centralService.googleVisionKey().getGoogleVisionKey();
         JsonNode response = requestHandler.execute(googleVisionRetrofitRequests.ocrRequest(googleVisionKey, googleVisionRequest));

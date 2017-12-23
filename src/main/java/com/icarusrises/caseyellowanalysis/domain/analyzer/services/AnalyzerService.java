@@ -6,5 +6,5 @@ import java.io.IOException;
 import java.util.Map;
 
 public interface AnalyzerService {
-    AnalyzedImage analyzeImage(Map<String, String> data) throws IOException;
+    AnalyzedImage analyzeImage(Map<String, Object> data) throws IOException;
 }
