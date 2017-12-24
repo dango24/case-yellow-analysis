@@ -30,7 +30,7 @@ imgParsersIdentifiers:
  bezeq: bezeqImageParser
 
 # Logger
-log.dir: /home/ec2-user/case-yellow-analysis
+log.dir: /home/ec2-user/case-yellow/logs
 
 logging:
  level:
@@ -40,4 +40,4 @@ logging:
  pattern:
    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] - %-5p %c{1}:%L - %m%n"
    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] - %-5p %c{1}:%L - %m%n"
- file: ${log.dir}/logs/case_yellow_analysis_log.log
+ file: ${log.dir}/case_yellow_analysis_log.log
