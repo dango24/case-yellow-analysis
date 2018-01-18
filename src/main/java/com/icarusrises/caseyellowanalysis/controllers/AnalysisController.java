@@ -48,7 +48,7 @@ public class AnalysisController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/analyze-image")
-    public AnalyzedImage analyzeImage(@RequestParam("identifier") String identifier, @RequestBody GoogleVisionRequest googleVisionRequest) {
+    public AnalyzedImage analyzeImage(@RequestParam("identifier")String identifier, @RequestBody GoogleVisionRequest googleVisionRequest) {
         logger.info("Received analyzeImage request for identifier: " + identifier);
 
         try {
