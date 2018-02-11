@@ -35,6 +35,7 @@ public class HotImageParser extends ImageTestParser {
         validateData(data);
         GoogleVisionRequest googleVisionRequest = (GoogleVisionRequest)data.get("file");
         List<WordData> hotIdentifiers;
+        data = addNegativeData(data);
 
         try {
             OcrResponse ocrResponse = parseImage(googleVisionRequest);
@@ -47,9 +48,7 @@ public class HotImageParser extends ImageTestParser {
                             .collect(Collectors.toList());
 
             if (hotIdentifiers.size() != hotIdentifierCount) {
-                throw new IllegalStateException("The number of found identifiers is not match for identifier: " +
-                        hotIdentifier + " expected: " + hotIdentifierCount +
-                        ", actual: " + hotIdentifiers.size());
+                handleCountMisMatch(data, hotIdentifiers.size());
             }
 
             PinnedWord pinnedWord = retrieveLeftResult(hotIdentifiers.get(0), hotIdentifiers.get(1));

@@ -40,4 +40,4 @@ logging:
  pattern:
    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] - %-5p %c{1}:%L - %m%n"
    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] - %-5p %c{1}:%L - %m%n"
- file: ${log.dir}/case_yellow_analysis_log.log
+ file: ${log.dir}/caseyellow-analysis-log

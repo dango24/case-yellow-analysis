@@ -39,22 +39,27 @@ public class BezeqImageParser extends ImageTestParser {
     public double parseSpeedTest(Map<String, Object> data) throws IOException {
         validateData(data);
         GoogleVisionRequest googleVisionRequest = (GoogleVisionRequest)data.get("file");
-        Map<String, List<WordData>> BezeqIdentifiers;
+        Map<String, List<WordData>> bezeqIdentifiers;
+        data = addNegativeData(data);
 
         try {
             OcrResponse ocrResponse = parseImage(googleVisionRequest);
             logger.info("successfully retrieve ocr response");
 
-            BezeqIdentifiers =
+            bezeqIdentifiers =
                     IntStream.range(0, ocrResponse.getTextAnnotations().size())
                             .filter(index -> ocrResponse.getTextAnnotations().get(index).getDescription().equals(bezeqMbLocation) ||
                                              ocrResponse.getTextAnnotations().get(index).getDescription().equals(bezeqKbLocation))
                             .mapToObj(index -> new WordData(ocrResponse.getTextAnnotations().get(index), index))
                             .collect(groupingBy(WordData::getDescription));
 
-            validateResults(BezeqIdentifiers);
+            if (bezeqIdentifiers.size() != 2) {
+                return handleCountMisMatch(data, bezeqIdentifiers.size());
+            }
 
-            PinnedWord mbPinnedWord = createPinnedWord(BezeqIdentifiers.get(bezeqMbLocation).get(0));
+            validateResults(bezeqIdentifiers);
+
+            PinnedWord mbPinnedWord = createPinnedWord(bezeqIdentifiers.get(bezeqMbLocation).get(0));
 
             List<PinnedWord> floatLocationsInText =
                     ocrResponse.getTextAnnotations()
@@ -83,10 +88,6 @@ public class BezeqImageParser extends ImageTestParser {
     }
 
     private void validateResults(Map<String, List<WordData>> bezeqIdentifiers) {
-        if (bezeqIdentifiers.size() != 2) {
-            throw new IllegalStateException("The number of found identifiers does not match for identifiers: " +
-                                            bezeqMbLocation + " and " + bezeqKbLocation + " result is: " + bezeqIdentifiers);
-        }
 
         if (isNull(bezeqIdentifiers.get(bezeqMbLocation)) || bezeqIdentifiers.get(bezeqMbLocation).size() != 1) {
             throw new SpeedTestParserException(bezeqMbLocation + " is null or not match the amount of correct identifiers, result: " + bezeqIdentifiers.get(bezeqMbLocation));
