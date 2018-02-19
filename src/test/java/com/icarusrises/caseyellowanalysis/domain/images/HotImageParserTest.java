@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +31,7 @@ public class HotImageParserTest {
     private static final String HOT_IMG_LOCATION_4 = "/images/hot_4_screenshot.PNG";
     private static final String HOT_IMG_LOCATION_5 = "/images/hot_5_screenshot.PNG";
     private static final String HOT_IMG_LOCATION_6 = "/images/hot_6_screenshot.PNG";
+    private static final String HIGH_RESOLUTION = "C:\\Users\\Dan\\Desktop\\New folder\\5B8DFF21D594F78AEBBA76D7F49ADE0C.png";
 
     private HotImageParser hotImageParser;
 
@@ -125,4 +127,12 @@ public class HotImageParserTest {
         assertEquals(String.valueOf(38.92), String.valueOf(hotImageParser.parseSpeedTest(map)));
     }
 
+    @Test
+    public void dang() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(new File(HIGH_RESOLUTION).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(38.92), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
 }

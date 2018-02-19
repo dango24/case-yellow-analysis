@@ -43,7 +43,7 @@ public class BezeqImageParser extends ImageTestParser {
         data = addNegativeData(data);
 
         try {
-            OcrResponse ocrResponse = parseImage(googleVisionRequest);
+            OcrResponse ocrResponse = parseImage(googleVisionRequest, String.valueOf(data.get(NEGATIVE_PARSING)));
             logger.info("successfully retrieve ocr response");
 
             bezeqIdentifiers =

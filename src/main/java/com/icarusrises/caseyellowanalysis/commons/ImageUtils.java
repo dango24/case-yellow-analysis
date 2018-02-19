@@ -1,6 +1,7 @@
 package com.icarusrises.caseyellowanalysis.commons;
 
 import com.icarusrises.caseyellowanalysis.exceptions.AnalyzerException;
+import com.icarusrises.caseyellowanalysis.exceptions.IORuntimeException;
 import org.apache.commons.io.FileUtils;
 
 import javax.imageio.ImageIO;
@@ -11,14 +12,19 @@ import java.util.Base64;
 
 public interface ImageUtils {
 
-    static byte[] createImageBase64Encode(String imgPath) throws IOException {
-        File imageFile = new File(imgPath);
-        byte[] imageBase64Encode = Base64.getEncoder().encode(FileUtils.readFileToByteArray(imageFile));
+    static byte[] createImageBase64Encode(String imgPath)  {
+        try {
+            File imageFile = new File(imgPath);
+            byte[] imageBase64Encode = Base64.getEncoder().encode(FileUtils.readFileToByteArray(imageFile));
 
-        return imageBase64Encode;
+            return imageBase64Encode;
+
+        } catch (IOException e) {
+            throw new IORuntimeException(e.getMessage(), e);
+        }
     }
 
-    static File convertToNegative(File imgFile)throws IOException {
+    static File convertToNegative(File imgFile) {
         BufferedImage img = null;
 
         //read image
@@ -50,13 +56,13 @@ public interface ImageUtils {
         }
         //write image
         try{
-            imgFile = File.createTempFile("Oren_efes", "Output.PNG");
+            imgFile = File.createTempFile("negative_file", "output.PNG");
             ImageIO.write(img, "PNG", imgFile);
 
             return imgFile;
 
         }catch(IOException e){
-            throw new AnalyzerException("Oren Mega Efes");
+            throw new AnalyzerException(String.format("Failed to convert to negative: ", e.getMessage()), e);
         }
     }
 }
