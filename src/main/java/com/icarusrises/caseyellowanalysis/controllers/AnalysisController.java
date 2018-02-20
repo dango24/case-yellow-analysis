@@ -49,7 +49,7 @@ public class AnalysisController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/ocr_request")
     public OcrResponse ocrRequest(@RequestBody GoogleVisionRequest googleVisionRequest) throws IOException {
-        logger.info("Received ocrRequest POST request for identifier");
+        logger.info("Received ocrRequest POST request");
         return googleVisionService.parseImage(googleVisionRequest);
     }
 
