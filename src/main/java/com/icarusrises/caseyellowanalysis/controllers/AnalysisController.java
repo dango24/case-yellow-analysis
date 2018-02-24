@@ -2,8 +2,8 @@ package com.icarusrises.caseyellowanalysis.controllers;
 
 import com.icarusrises.caseyellowanalysis.domain.analyzer.model.AnalyzedImage;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.services.AnalyzerService;
-import com.icarusrises.caseyellowanalysis.domain.inception.ImageClassification;
-import com.icarusrises.caseyellowanalysis.domain.inception.ImageClassifierService;
+import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassificationStatus;
+import com.icarusrises.caseyellowanalysis.domain.inception.services.ImageClassifierService;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.VisionRequest;
@@ -54,7 +54,7 @@ public class AnalysisController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/classify-image")
-    public List<ImageClassification> classifyImage(@RequestBody VisionRequest visionRequest)  {
+    public ImageClassificationStatus classifyImage(@RequestBody VisionRequest visionRequest)  {
         logger.info(String.format("Received classifyImage GET request for image: %s", visionRequest));
         return imageClassifierService.classifyImage(visionRequest);
     }

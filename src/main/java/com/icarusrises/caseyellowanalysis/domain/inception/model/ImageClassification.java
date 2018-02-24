@@ -1,4 +1,4 @@
-package com.icarusrises.caseyellowanalysis.domain.inception;
+package com.icarusrises.caseyellowanalysis.domain.inception.model;
 
 public class ImageClassification {
 

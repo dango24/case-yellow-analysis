@@ -1,9 +1,12 @@
-package com.icarusrises.caseyellowanalysis.domain.inception;
+package com.icarusrises.caseyellowanalysis.domain.inception.services;
 
+import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassification;
+import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassificationStatus;
 import com.icarusrises.caseyellowanalysis.exceptions.AnalyzerException;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.VisionRequest;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -30,15 +33,26 @@ public class ImageClassifierServiceImpl implements ImageClassifierService {
     @Value("${inception.model}")
     private String model;
 
+    private ImageDecisionService imageDecisionService;
+
+    @Autowired
+    public ImageClassifierServiceImpl(ImageDecisionService imageDecisionService) {
+        this.imageDecisionService = imageDecisionService;
+    }
+
     @Override
-    public List<ImageClassification> classifyImage(VisionRequest visionRequest) {
+    public ImageClassificationStatus classifyImage(VisionRequest visionRequest) {
         try {
+
             File imageFile = convertBase64ToImage(visionRequest.getImage());
             String commandOutput = executeInceptionCommand(imageFile.getAbsolutePath());
 
-            return Stream.of(commandOutput.split("\n"))
-                         .map(this::generateImageClassification)
-                         .collect(toList());
+            List<ImageClassification> imageClassifications =
+                Stream.of(commandOutput.split("\n"))
+                      .map(this::generateImageClassification)
+                      .collect(toList());
+
+            return imageDecisionService.generateDecision(imageClassifications);
 
         } catch (IOException e) {
             String errorMessage = String.format("Failed to classify image: %s", e.getMessage());
