@@ -2,15 +2,22 @@ package com.icarusrises.caseyellowanalysis.commons;
 
 import com.icarusrises.caseyellowanalysis.exceptions.AnalyzerException;
 import com.icarusrises.caseyellowanalysis.exceptions.IORuntimeException;
+import com.icarusrises.caseyellowanalysis.services.googlevision.model.Image;
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 
+import static java.lang.String.format;
+
 public interface ImageUtils {
+
+    Logger logger = Logger.getLogger(ImageUtils.class);
 
     static byte[] createImageBase64Encode(String imgPath)  {
         try {
@@ -62,7 +69,24 @@ public interface ImageUtils {
             return imgFile;
 
         }catch(IOException e){
-            throw new AnalyzerException(String.format("Failed to convert to negative: ", e.getMessage()), e);
+            String errorMessage = format("Failed to convert to negative: ", e.getMessage());
+            logger.error(errorMessage);
+            throw new AnalyzerException(errorMessage, e);
         }
+    }
+
+    static File convertBase64ToImage(Image image) {
+        File tmpFile = Utils.createTmpPNGFile();
+
+        try (FileOutputStream out = new FileOutputStream(tmpFile)) {
+            byte[] btDataFile = new sun.misc.BASE64Decoder().decodeBuffer(image.getContent());
+            out.write(btDataFile);
+            out.flush();
+
+        } catch (IOException e) {
+            logger.error(format("Failed to convert file to negative, error message: %s", e.getMessage(), e));
+        }
+
+        return tmpFile;
     }
 }

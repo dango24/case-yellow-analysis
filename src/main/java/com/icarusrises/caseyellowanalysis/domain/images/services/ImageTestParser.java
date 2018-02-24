@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.icarusrises.caseyellowanalysis.commons.ImageUtils.convertBase64ToImage;
 import static com.icarusrises.caseyellowanalysis.commons.ImageUtils.convertToNegative;
 import static com.icarusrises.caseyellowanalysis.commons.ImageUtils.createImageBase64Encode;
 import static java.util.Objects.isNull;
@@ -73,16 +74,7 @@ public abstract class ImageTestParser implements SpeedTestParser {
 
     private VisionRequest convertImageToNegative(VisionRequest visionRequest) {
         Image image = visionRequest.getImage();
-        File tmpFile = Utils.createTmpPNGFile();
-
-        try (FileOutputStream out = new FileOutputStream(tmpFile)) {
-            byte[] btDataFile = new sun.misc.BASE64Decoder().decodeBuffer(image.getContent());
-            out.write(btDataFile);
-            out.flush();
-
-        } catch (IOException e) {
-            logger.error(String.format("Failed to convert file to negative, error message: %s", e.getMessage(), e));
-        }
+        File tmpFile = convertBase64ToImage(image);
 
         try {
             File negativeFile = convertToNegative(tmpFile);
