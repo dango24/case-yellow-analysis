@@ -1,0 +1,75 @@
+package com.icarusrises.caseyellowanalysis.domain.inception;
+
+import com.icarusrises.caseyellowanalysis.exceptions.AnalyzerException;
+import com.icarusrises.caseyellowanalysis.services.googlevision.model.VisionRequest;
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import static com.icarusrises.caseyellowanalysis.commons.ImageUtils.convertBase64ToImage;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.stream.Collectors.toList;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.stream.Stream;
+
+@Service
+public class ImageClassifierServiceImpl implements ImageClassifierService {
+
+    private Logger logger = Logger.getLogger(ImageClassifierServiceImpl.class);
+
+    private static final String INCEPTION_BASE_COMMAND = "/usr/bin/python %s/predict.py %s/models/%s %s";
+
+    @Value("${inception.dir}")
+    private String inceptionDir;
+
+    @Value("${inception.model}")
+    private String model;
+
+    @Override
+    public List<ImageClassification> classifyImage(VisionRequest visionRequest) {
+        try {
+            File imageFile = convertBase64ToImage(visionRequest.getImage());
+            String commandOutput = executeInceptionCommand(imageFile.getAbsolutePath());
+
+            return Stream.of(commandOutput.split("\n"))
+                         .map(this::generateImageClassification)
+                         .collect(toList());
+
+        } catch (IOException e) {
+            String errorMessage = String.format("Failed to classify image: %s", e.getMessage());
+            logger.error(errorMessage, e);
+
+            throw new AnalyzerException(errorMessage, e);
+        }
+    }
+
+    private String executeInceptionCommand(String path) throws IOException {
+        String inceptionCommand = String.format(INCEPTION_BASE_COMMAND, inceptionDir, inceptionDir, model, path);
+        Process process = Runtime.getRuntime().exec(inceptionCommand);
+
+        try (InputStream inputStream = process.getInputStream()) {
+
+            return IOUtils.toString(inputStream, UTF_8);
+
+        } catch (Exception e) {
+            String errorMessage = String.format("Failed to read input data from inception service, cause: ", e.getMessage());
+            logger.error(errorMessage, e);
+
+            throw new AnalyzerException(errorMessage, e);
+        }
+    }
+
+    private ImageClassification generateImageClassification(String imageClassificationStr) {
+        int confidenceIndex = imageClassificationStr.lastIndexOf(" ");
+        String label = imageClassificationStr.substring(0, confidenceIndex);
+        double confidence = Double.valueOf(imageClassificationStr.substring(confidenceIndex+1));
+
+        return new ImageClassification(label, confidence);
+    }
+
+}

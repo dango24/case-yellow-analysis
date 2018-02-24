@@ -13,6 +13,10 @@ central_url: http://localhost:9080
 spring.http.multipart.max-file-size: 5MB
 spring.http.multipart.max-request-size: 20MB
 
+case.yellow.dir: /home/ec2-user/case-yellow
+inception.dir: ${case.yellow.dir}/inception_for_speedtest
+inception.model: 9_classes
+
 # Identifiers Meta Data
 hot_location: Mbps
 hot_identifier: Mbps
@@ -30,7 +34,7 @@ imgParsersIdentifiers:
  bezeq: bezeqImageParser
 
 # Logger
-log.dir: /home/ec2-user/case-yellow/logs
+log.dir: ${case.yellow.dir}/logs
 
 logging:
  level:
