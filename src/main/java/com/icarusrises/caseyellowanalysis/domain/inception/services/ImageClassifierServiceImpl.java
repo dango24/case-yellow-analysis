@@ -43,7 +43,6 @@ public class ImageClassifierServiceImpl implements ImageClassifierService {
     @Override
     public ImageClassificationStatus classifyImage(VisionRequest visionRequest) {
         try {
-
             File imageFile = convertBase64ToImage(visionRequest.getImage());
             String commandOutput = executeInceptionCommand(imageFile.getAbsolutePath());
 
@@ -79,11 +78,19 @@ public class ImageClassifierServiceImpl implements ImageClassifierService {
     }
 
     private ImageClassification generateImageClassification(String imageClassificationStr) {
-        int confidenceIndex = imageClassificationStr.lastIndexOf(" ");
-        String label = imageClassificationStr.substring(0, confidenceIndex);
-        double confidence = Double.valueOf(imageClassificationStr.substring(confidenceIndex+1));
+        try {
+            int confidenceIndex = imageClassificationStr.lastIndexOf(" ");
+            String label = imageClassificationStr.substring(0, confidenceIndex);
+            double confidence = Double.valueOf(imageClassificationStr.substring(confidenceIndex + 1));
 
-        return new ImageClassification(label, confidence);
+            return new ImageClassification(label, confidence);
+
+        } catch (Exception e) {
+            String errorMessage = String.format("Failed to generate image classification from: %s", imageClassificationStr);
+            logger.error(errorMessage);
+
+            throw new AnalyzerException(errorMessage);
+        }
     }
 
 }

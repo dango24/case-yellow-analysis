@@ -22,6 +22,8 @@ public class ImageDecisionServiceImpl implements ImageDecisionService {
             return ImageClassificationStatus.FAILED;
         }
 
+        logger.info(String.format("produce image classification from: %s", imageClassifications));
+
         ImageClassification higherConfidenceImageClassification =
             imageClassifications.stream()
                                 .sorted(Comparator.comparing(ImageClassification::getConfidence).reversed())
@@ -32,6 +34,8 @@ public class ImageDecisionServiceImpl implements ImageDecisionService {
     }
 
     private ImageClassificationStatus makeDecision(String label) {
+        logger.info(String.format("The decision label: %s", label));
+
         if (label.contains("start")) {
             return ImageClassificationStatus.EXIST;
         } else if (label.contains("unready")) {
