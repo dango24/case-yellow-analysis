@@ -54,9 +54,9 @@ public class AnalysisController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/classify-image")
-    public ImageClassificationStatus classifyImage(@RequestBody VisionRequest visionRequest)  {
-        logger.info(String.format("Received classifyImage GET request for image: %s", visionRequest));
-        return imageClassifierService.classifyImage(visionRequest);
+    public ImageClassificationStatus classifyImage(@RequestParam("identifier")String identifier, @RequestBody VisionRequest visionRequest)  {
+        logger.info(String.format("Received classifyImage GET request for identifier: %s, image: %s", identifier, visionRequest));
+        return imageClassifierService.classifyImage(visionRequest, identifier);
     }
 
     @ResponseStatus(HttpStatus.OK)

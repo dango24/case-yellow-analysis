@@ -4,5 +4,5 @@ import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassifica
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.VisionRequest;
 
 public interface ImageClassifierService {
-    ImageClassificationStatus classifyImage(VisionRequest visionRequest);
+    ImageClassificationStatus classifyImage(VisionRequest visionRequest, String identifier);
 }

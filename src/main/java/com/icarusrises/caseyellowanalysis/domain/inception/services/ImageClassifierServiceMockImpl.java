@@ -7,72 +7,52 @@ import com.icarusrises.caseyellowanalysis.services.googlevision.model.VisionRequ
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import static com.icarusrises.caseyellowanalysis.commons.ImageUtils.convertBase64ToImage;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.stream.Collectors.toList;
-
-import java.io.File;
+import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
-@Profile("prod")
-public class ImageClassifierServiceImpl implements ImageClassifierService {
+@Profile("dev")
+public class ImageClassifierServiceMockImpl implements ImageClassifierService {
 
-    private Logger logger = Logger.getLogger(ImageClassifierServiceImpl.class);
+    private Logger logger = Logger.getLogger(ImageClassifierServiceMockImpl.class);
 
-    private static final String INCEPTION_BASE_COMMAND = "/usr/bin/python %s/predict.py %s/models/%s %s";
+    private static final String INCEPTION_MOCK_LOCATION = "/mock_inception";
 
-    @Value("${inception.dir}")
-    private String inceptionDir;
 
-    @Value("${inception.model}")
-    private String model;
-
+    private String inceptionOutput;
     private ImageDecisionService imageDecisionService;
 
     @Autowired
-    public ImageClassifierServiceImpl(ImageDecisionService imageDecisionService) {
+    public ImageClassifierServiceMockImpl(ImageDecisionService imageDecisionService) {
         this.imageDecisionService = imageDecisionService;
+    }
+
+    @PostConstruct
+    private void init() throws IOException {
+        inceptionOutput = IOUtils.toString(ImageClassifierServiceMockImpl.class.getResourceAsStream(INCEPTION_MOCK_LOCATION), Charset.forName("UTF-8"));
     }
 
     @Override
     public ImageClassificationStatus classifyImage(VisionRequest visionRequest, String identifier) {
         try {
-            File imageFile = convertBase64ToImage(visionRequest.getImage());
-            String commandOutput = executeInceptionCommand(imageFile.getAbsolutePath());
-
             List<ImageClassification> imageClassifications =
-                Stream.of(commandOutput.split("\n"))
+                Stream.of(inceptionOutput.split("\n"))
+                      .map(String::trim)
                       .map(this::generateImageClassification)
                       .collect(toList());
 
             return imageDecisionService.generateDecision(imageClassifications, identifier);
 
-        } catch (IOException e) {
-            String errorMessage = String.format("Failed to classify image: %s", e.getMessage());
-            logger.error(errorMessage, e);
-
-            throw new AnalyzerException(errorMessage, e);
-        }
-    }
-
-    private String executeInceptionCommand(String path) throws IOException {
-        String inceptionCommand = String.format(INCEPTION_BASE_COMMAND, inceptionDir, inceptionDir, model, path);
-        Process process = Runtime.getRuntime().exec(inceptionCommand);
-
-        try (InputStream inputStream = process.getInputStream()) {
-
-            return IOUtils.toString(inputStream, UTF_8);
-
         } catch (Exception e) {
-            String errorMessage = String.format("Failed to read input data from inception service, cause: ", e.getMessage());
+            String errorMessage = String.format("Failed to classify image: %s", e.getMessage());
             logger.error(errorMessage, e);
 
             throw new AnalyzerException(errorMessage, e);

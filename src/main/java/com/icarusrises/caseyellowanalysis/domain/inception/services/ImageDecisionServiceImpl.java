@@ -17,7 +17,7 @@ public class ImageDecisionServiceImpl implements ImageDecisionService {
     private Logger logger = Logger.getLogger(ImageDecisionServiceImpl.class);
 
     @Override
-    public ImageClassificationStatus generateDecision(List<ImageClassification> imageClassifications) {
+    public ImageClassificationStatus generateDecision(List<ImageClassification> imageClassifications, String identifier) {
         if (CollectionUtils.isEmpty(imageClassifications)) {
             return ImageClassificationStatus.FAILED;
         }
@@ -30,15 +30,15 @@ public class ImageDecisionServiceImpl implements ImageDecisionService {
                                 .collect(toList())
                                 .get(0);
 
-        return makeDecision(higherConfidenceImageClassification.getLabel().toLowerCase());
+        return makeDecision(higherConfidenceImageClassification.getLabel().toLowerCase(), identifier);
     }
 
-    private ImageClassificationStatus makeDecision(String label) {
+    private ImageClassificationStatus makeDecision(String label, String identifier) {
         logger.info(String.format("The decision label: %s", label));
 
-        if (label.contains("start")) {
+        if (label.contains("start") && label.contains(identifier)) {
             return ImageClassificationStatus.EXIST;
-        } else if (label.contains("unready")) {
+        } else if (label.contains("unready") && label.contains(identifier)) {
             return ImageClassificationStatus.RETRY;
         } else {
             return ImageClassificationStatus.FAILED;

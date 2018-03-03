@@ -6,5 +6,5 @@ import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassifica
 import java.util.List;
 
 public interface ImageDecisionService {
-    ImageClassificationStatus generateDecision(List<ImageClassification> imageClassifications);
+    ImageClassificationStatus generateDecision(List<ImageClassification> imageClassifications, String identifier);
 }
