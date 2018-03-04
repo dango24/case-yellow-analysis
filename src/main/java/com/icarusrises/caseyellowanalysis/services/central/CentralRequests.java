@@ -11,4 +11,11 @@ public interface CentralRequests {
     })
     @GET("central/google-vision-key")
     Call<GoogleVisionKey> googleVisionKey();
+
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
+    @GET("central/pre-signed-url")
+    Call<PreSignedUrl> generatePreSignedUrl(@Query("file_key") String fileKey);
 }

@@ -36,4 +36,9 @@ public class CentralServiceImp implements CentralService {
     public GoogleVisionKey googleVisionKey() {
         return requestHandler.execute(centralRequests.googleVisionKey());
     }
+
+    @Override
+    public PreSignedUrl generatePreSignedUrl(String fileKey) {
+        return requestHandler.execute(centralRequests.generatePreSignedUrl(fileKey));
+    }
 }

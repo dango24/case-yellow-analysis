@@ -15,7 +15,7 @@ spring.http.multipart.max-request-size: 20MB
 
 case.yellow.dir: /home/ec2-user/case-yellow
 inception.dir: ${case.yellow.dir}/inception_for_speedtest
-inception.model: 9_classes
+inception.model: 11_classes
 
 # Identifiers Meta Data
 hot_location: Mbps

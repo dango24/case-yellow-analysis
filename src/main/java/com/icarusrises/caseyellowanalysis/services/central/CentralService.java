@@ -6,4 +6,5 @@ package com.icarusrises.caseyellowanalysis.services.central;
  */
 public interface CentralService {
     GoogleVisionKey googleVisionKey();
+    PreSignedUrl generatePreSignedUrl(String fileKey);
 }

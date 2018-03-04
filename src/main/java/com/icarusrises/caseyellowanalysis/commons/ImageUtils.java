@@ -4,13 +4,15 @@ import com.icarusrises.caseyellowanalysis.exceptions.AnalyzerException;
 import com.icarusrises.caseyellowanalysis.exceptions.IORuntimeException;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.Image;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import javax.imageio.ImageIO;
+import javax.xml.bind.DatatypeConverter;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 import static java.lang.String.format;
@@ -18,6 +20,23 @@ import static java.lang.String.format;
 public interface ImageUtils {
 
     Logger logger = Logger.getLogger(ImageUtils.class);
+
+    static File getImgFromResources(String path) throws IOException {
+        InputStream resourceAsStream = UploadFileUtils.class.getResourceAsStream(path);
+        BufferedImage image = ImageIO.read(resourceAsStream);
+        File tmpFile = File.createTempFile("test_", new File(path).getName());
+        ImageIO.write(image, "PNG", tmpFile);
+
+        return tmpFile;
+    }
+
+    static File createTmpPNGFile() throws IORuntimeException {
+        try {
+            return File.createTempFile("tmpImage", ".PNG");
+        } catch (IOException e) {
+            throw new IORuntimeException(e.getMessage(), e);
+        }
+    }
 
     static byte[] createImageBase64Encode(String imgPath)  {
         try {
@@ -76,7 +95,7 @@ public interface ImageUtils {
     }
 
     static File convertBase64ToImage(Image image) {
-        File tmpFile = Utils.createTmpPNGFile();
+        File tmpFile = createTmpPNGFile();
 
         try (FileOutputStream out = new FileOutputStream(tmpFile)) {
             byte[] btDataFile = new sun.misc.BASE64Decoder().decodeBuffer(image.getContent());
@@ -88,5 +107,20 @@ public interface ImageUtils {
         }
 
         return tmpFile;
+    }
+
+    static String convertToMD5(File file)  {
+
+        try (InputStream in = new FileInputStream(file)) {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(IOUtils.toByteArray(in));
+
+            return DatatypeConverter.printHexBinary(md.digest());
+
+        } catch (IOException | NoSuchAlgorithmException e) {
+            logger.error(String.format("Failed to convert to MD5, error: %s", e.getMessage(), e));
+            return "UNKNOWN";
+        }
+
     }
 }

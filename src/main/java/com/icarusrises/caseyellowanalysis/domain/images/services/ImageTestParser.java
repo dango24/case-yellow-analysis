@@ -1,6 +1,5 @@
 package com.icarusrises.caseyellowanalysis.domain.images.services;
 
-import com.icarusrises.caseyellowanalysis.commons.Utils;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.services.ImageAnalyzerService;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.services.SpeedTestParser;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.services.SpeedTestParserSupplier;
@@ -15,7 +14,6 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;

@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import static com.icarusrises.caseyellowanalysis.commons.Utils.getImgFromResources;
+import static com.icarusrises.caseyellowanalysis.commons.ImageUtils.getImgFromResources;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;

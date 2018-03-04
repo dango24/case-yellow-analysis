@@ -20,6 +20,7 @@ public class ImageDecisionServiceImpl implements ImageDecisionService {
     @Override
     public ImageClassificationResult generateDecision(List<ImageClassification> imageClassifications, String identifier) {
         ImageClassificationStatus status;
+        ImageClassification highestConfidenceImageClassification;
 
         if (CollectionUtils.isEmpty(imageClassifications)) {
             logger.warn(String.format("There is no imageClassifications for identifier: %s", identifier));
@@ -28,13 +29,8 @@ public class ImageDecisionServiceImpl implements ImageDecisionService {
 
         logger.info(String.format("produce image classification from: %s", imageClassifications));
 
-        ImageClassification higherConfidenceImageClassification =
-            imageClassifications.stream()
-                                .sorted(Comparator.comparing(ImageClassification::getConfidence).reversed())
-                                .collect(toList())
-                                .get(0);
-
-        status = makeDecision(higherConfidenceImageClassification.getLabel().toLowerCase(), identifier);
+        highestConfidenceImageClassification = ImageDecisionService.getHighestConfidenceImageClassification(imageClassifications);
+        status = makeDecision(highestConfidenceImageClassification.getLabel().toLowerCase(), identifier);
 
         return new ImageClassificationResult(status);
     }

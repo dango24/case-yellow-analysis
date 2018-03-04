@@ -1,8 +1,11 @@
 package com.icarusrises.caseyellowanalysis.domain.inception.services;
 
+import com.icarusrises.caseyellowanalysis.commons.ImageUtils;
 import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassification;
 import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassificationResult;
 import com.icarusrises.caseyellowanalysis.exceptions.AnalyzerException;
+import com.icarusrises.caseyellowanalysis.services.central.CentralService;
+import com.icarusrises.caseyellowanalysis.services.central.PreSignedUrl;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.VisionRequest;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -12,6 +15,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import static com.icarusrises.caseyellowanalysis.commons.ImageUtils.convertBase64ToImage;
+import static com.icarusrises.caseyellowanalysis.commons.UploadFileUtils.generateInceptionSnapshotPth;
+import static com.icarusrises.caseyellowanalysis.commons.UploadFileUtils.uploadObject;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toList;
 
@@ -35,11 +40,13 @@ public class ImageClassifierServiceImpl implements ImageClassifierService {
     @Value("${inception.model}")
     private String model;
 
+    private CentralService centralService;
     private ImageDecisionService imageDecisionService;
 
     @Autowired
-    public ImageClassifierServiceImpl(ImageDecisionService imageDecisionService) {
+    public ImageClassifierServiceImpl(ImageDecisionService imageDecisionService, CentralService centralService) {
         this.imageDecisionService = imageDecisionService;
+        this.centralService = centralService;
     }
 
     @Override
@@ -93,6 +100,15 @@ public class ImageClassifierServiceImpl implements ImageClassifierService {
 
             throw new AnalyzerException(errorMessage);
         }
+    }
+
+    private void uploadImageClassification(File imageFile, ImageClassification highestImageClassification) {
+        String label = highestImageClassification.getLabel();
+        double confidence = highestImageClassification.getConfidence();
+        String md5 = ImageUtils.convertToMD5(imageFile);
+        PreSignedUrl preSignedUrl = centralService.generatePreSignedUrl(generateInceptionSnapshotPth(label, confidence, md5));
+
+        uploadObject(preSignedUrl.getPreSignedUrl(), imageFile.getAbsolutePath());
     }
 
 }
