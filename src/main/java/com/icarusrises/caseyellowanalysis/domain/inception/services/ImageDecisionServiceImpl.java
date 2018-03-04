@@ -7,10 +7,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import java.util.stream.Stream;
 
 @Service
 public class ImageDecisionServiceImpl implements ImageDecisionService {
@@ -38,14 +36,14 @@ public class ImageDecisionServiceImpl implements ImageDecisionService {
     private ImageClassificationStatus makeDecision(String label, String identifier) {
         logger.info(String.format("The decision label: %s", label));
 
-        if (label.contains("start") && label.contains(identifier)) {
-            return ImageClassificationStatus.START_EXIST;
-        } else if (label.contains("end") && label.contains(identifier)) {
-            return ImageClassificationStatus.END_EXIST;
-        } else if (label.contains("unready") && label.contains(identifier)) {
-            return ImageClassificationStatus.RETRY;
-        } else {
-            return ImageClassificationStatus.FAILED;
+        if (label.contains(identifier)) {
+
+            return Stream.of(ImageClassificationStatus.values())
+                         .filter(status -> label.contains(status.name().toLowerCase()))
+                         .findFirst()
+                         .orElse(ImageClassificationStatus.FAILED);
         }
+
+        return ImageClassificationStatus.FAILED;
     }
 }

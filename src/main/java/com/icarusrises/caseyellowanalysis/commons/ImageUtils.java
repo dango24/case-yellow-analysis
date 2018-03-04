@@ -1,5 +1,6 @@
 package com.icarusrises.caseyellowanalysis.commons;
 
+import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassification;
 import com.icarusrises.caseyellowanalysis.exceptions.AnalyzerException;
 import com.icarusrises.caseyellowanalysis.exceptions.IORuntimeException;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.Image;
@@ -14,8 +15,11 @@ import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
 
 public interface ImageUtils {
 
@@ -121,6 +125,27 @@ public interface ImageUtils {
             logger.error(String.format("Failed to convert to MD5, error: %s", e.getMessage(), e));
             return "UNKNOWN";
         }
+    }
 
+    static List<ImageClassification> parseInceptionCommandOutput(String output) {
+        return Stream.of(output.split("\n"))
+                     .map(ImageUtils::generateImageClassification)
+                     .collect(toList());
+    }
+
+    static ImageClassification generateImageClassification(String imageClassificationStr) {
+        try {
+            int confidenceIndex = imageClassificationStr.lastIndexOf(" ");
+            String label = imageClassificationStr.substring(0, confidenceIndex);
+            double confidence = Double.valueOf(imageClassificationStr.substring(confidenceIndex + 1));
+
+            return new ImageClassification(label, confidence);
+
+        } catch (Exception e) {
+            String errorMessage = String.format("Failed to generate image classification from: %s", imageClassificationStr);
+            logger.error(errorMessage);
+
+            throw new AnalyzerException(errorMessage);
+        }
     }
 }
