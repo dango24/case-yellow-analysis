@@ -2,7 +2,7 @@ package com.icarusrises.caseyellowanalysis.controllers;
 
 import com.icarusrises.caseyellowanalysis.domain.analyzer.model.AnalyzedImage;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.services.AnalyzerService;
-import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassificationStatus;
+import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassificationResult;
 import com.icarusrises.caseyellowanalysis.domain.inception.services.ImageClassifierService;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -54,7 +53,7 @@ public class AnalysisController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/classify-image")
-    public ImageClassificationStatus classifyImage(@RequestParam("identifier")String identifier, @RequestBody VisionRequest visionRequest)  {
+    public ImageClassificationResult classifyImage(@RequestParam("identifier")String identifier, @RequestBody VisionRequest visionRequest)  {
         logger.info(String.format("Received classifyImage GET request for identifier: %s, image: %s", identifier, visionRequest));
         return imageClassifierService.classifyImage(visionRequest, identifier);
     }

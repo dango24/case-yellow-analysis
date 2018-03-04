@@ -1,7 +1,7 @@
 package com.icarusrises.caseyellowanalysis.domain.inception.services;
 
 import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassification;
-import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassificationStatus;
+import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassificationResult;
 import com.icarusrises.caseyellowanalysis.exceptions.AnalyzerException;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.VisionRequest;
 import org.apache.commons.io.IOUtils;
@@ -43,7 +43,7 @@ public class ImageClassifierServiceImpl implements ImageClassifierService {
     }
 
     @Override
-    public ImageClassificationStatus classifyImage(VisionRequest visionRequest, String identifier) {
+    public ImageClassificationResult classifyImage(VisionRequest visionRequest, String identifier) {
         try {
             File imageFile = convertBase64ToImage(visionRequest.getImage());
             String commandOutput = executeInceptionCommand(imageFile.getAbsolutePath());
