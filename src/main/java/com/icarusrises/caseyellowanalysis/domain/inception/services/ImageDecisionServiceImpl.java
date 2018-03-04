@@ -19,6 +19,7 @@ public class ImageDecisionServiceImpl implements ImageDecisionService {
     @Override
     public ImageClassificationStatus generateDecision(List<ImageClassification> imageClassifications, String identifier) {
         if (CollectionUtils.isEmpty(imageClassifications)) {
+            logger.warn(String.format("There is no imageClassifications for identifier: %s", identifier));
             return ImageClassificationStatus.FAILED;
         }
 
