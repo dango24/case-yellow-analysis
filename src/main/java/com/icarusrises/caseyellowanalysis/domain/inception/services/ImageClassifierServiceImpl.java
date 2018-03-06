@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static com.icarusrises.caseyellowanalysis.commons.ImageUtils.convertBase64ToImage;
-import static com.icarusrises.caseyellowanalysis.commons.UploadFileUtils.generateInceptionSnapshotPth;
+import static com.icarusrises.caseyellowanalysis.commons.UploadFileUtils.generateInceptionSnapshotPath;
 import static com.icarusrises.caseyellowanalysis.commons.UploadFileUtils.uploadObject;
 import static com.icarusrises.caseyellowanalysis.domain.inception.services.ImageDecisionService.getHighestConfidenceImageClassification;
 
@@ -58,7 +58,7 @@ public class ImageClassifierServiceImpl implements ImageClassifierService {
         String label = highestImageClassification.getLabel();
         double confidence = highestImageClassification.getConfidence();
         String md5 = ImageUtils.convertToMD5(imageFile);
-        PreSignedUrl preSignedUrl = centralService.generatePreSignedUrl(generateInceptionSnapshotPth(label, confidence, md5));
+        PreSignedUrl preSignedUrl = centralService.generatePreSignedUrl(generateInceptionSnapshotPath(label, confidence, md5));
 
         uploadObject(preSignedUrl.getPreSignedUrl(), imageFile.getAbsolutePath());
     }

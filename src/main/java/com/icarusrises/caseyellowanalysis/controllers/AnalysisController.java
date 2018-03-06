@@ -9,6 +9,7 @@ import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrRespons
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.VisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.services.OcrService;
 import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.util.Objects.nonNull;
 
 
 @RestController
@@ -53,9 +56,19 @@ public class AnalysisController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/classify-image")
-    public ImageClassificationResult classifyImage(@RequestParam("identifier")String identifier, @RequestBody VisionRequest visionRequest)  {
+    public ImageClassificationResult classifyImage(@RequestParam("md5") String md5, @RequestParam("identifier")String identifier, @RequestBody VisionRequest visionRequest)  {
         logger.info(String.format("Received classifyImage GET request for identifier: %s, image: %s", identifier, visionRequest));
-        return imageClassifierService.classifyImage(visionRequest, identifier);
+
+        try {
+            if (nonNull(md5)) {
+                MDC.put("correlation-id", md5);
+            }
+
+            return imageClassifierService.classifyImage(visionRequest, identifier);
+
+        } finally {
+            MDC.remove("correlation-id");
+        }
     }
 
     @ResponseStatus(HttpStatus.OK)

@@ -1,12 +1,14 @@
 package com.icarusrises.caseyellowanalysis.services.googlevision.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import static com.icarusrises.caseyellowanalysis.commons.ImageUtils.createImageBase64Encode;
 
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class VisionRequest {
 
     private Image image;
