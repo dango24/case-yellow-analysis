@@ -43,6 +43,7 @@ public class ImageClassifierServiceImpl implements ImageClassifierService {
     public ImageClassificationResult classifyImage(VisionRequest visionRequest, String identifier) {
         try {
             File imageFile = convertBase64ToImage(visionRequest.getImage());
+            logger.info("Start classify image");
             String commandOutput = imageInceptionExecutor.executeInceptionCommand(imageFile.getAbsolutePath());
             List<ImageClassification> imageClassifications = ImageUtils.parseInceptionCommandOutput(commandOutput);
 
@@ -64,6 +65,7 @@ public class ImageClassifierServiceImpl implements ImageClassifierService {
         String md5 = ImageUtils.convertToMD5(imageFile);
         PreSignedUrl preSignedUrl = centralService.generatePreSignedUrl(generateInceptionSnapshotPath(label, confidence, md5, inceptionModel));
 
+        logger.info(String.format("Upload inception image: %s", md5));
         uploadObject(preSignedUrl.getPreSignedUrl(), imageFile.getAbsolutePath());
     }
 

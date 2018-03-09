@@ -41,12 +41,11 @@ public class AnalysisController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/analyze-image")
     public AnalyzedImage analyzeImage(@RequestParam("identifier")String identifier, @RequestParam("md5")String md5, @RequestBody GoogleVisionRequest googleVisionRequest) {
-        logger.info("Received analyzeImage POST request for identifier: " + identifier);
-
         try {
             if (nonNull(md5)) {
                 MDC.put("correlation-id", md5);
             }
+            logger.info("Received analyzeImage POST request for identifier: " + identifier);
 
             Map<String, Object> data = createData(identifier, googleVisionRequest);
 
@@ -63,12 +62,11 @@ public class AnalysisController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/classify-image")
     public ImageClassificationResult classifyImage(@RequestParam("md5") String md5, @RequestParam("identifier")String identifier, @RequestBody VisionRequest visionRequest)  {
-        logger.info(String.format("Received classifyImage GET request for identifier: %s, image: %s", identifier, visionRequest));
-
         try {
             if (nonNull(md5)) {
                 MDC.put("correlation-id", md5);
             }
+            logger.info(String.format("Received classifyImage GET request for identifier: %s, image: %s", identifier, visionRequest));
 
             return imageClassifierService.classifyImage(visionRequest, identifier);
 

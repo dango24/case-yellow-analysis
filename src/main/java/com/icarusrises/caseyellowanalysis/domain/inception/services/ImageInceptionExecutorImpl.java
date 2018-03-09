@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -24,6 +25,11 @@ public class ImageInceptionExecutorImpl implements ImageInceptionExecutor {
 
     @Value("${inception.model}")
     private String model;
+
+    @PostConstruct
+    private void init() {
+        log.info(String.format("Image inception executor model: %s", model));
+    }
 
     @Override
     public String executeInceptionCommand(String path) {
