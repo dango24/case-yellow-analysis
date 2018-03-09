@@ -9,6 +9,7 @@ import com.icarusrises.caseyellowanalysis.services.central.PreSignedUrl;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.VisionRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import static com.icarusrises.caseyellowanalysis.commons.ImageUtils.convertBase64ToImage;
@@ -23,6 +24,9 @@ import java.util.List;
 public class ImageClassifierServiceImpl implements ImageClassifierService {
 
     private Logger logger = Logger.getLogger(ImageClassifierServiceImpl.class);
+
+    @Value("${inception.model}")
+    private String inceptionModel;
 
     private CentralService centralService;
     private ImageDecisionService imageDecisionService;
@@ -58,7 +62,7 @@ public class ImageClassifierServiceImpl implements ImageClassifierService {
         String label = highestImageClassification.getLabel();
         double confidence = highestImageClassification.getConfidence();
         String md5 = ImageUtils.convertToMD5(imageFile);
-        PreSignedUrl preSignedUrl = centralService.generatePreSignedUrl(generateInceptionSnapshotPath(label, confidence, md5));
+        PreSignedUrl preSignedUrl = centralService.generatePreSignedUrl(generateInceptionSnapshotPath(label, confidence, md5, inceptionModel));
 
         uploadObject(preSignedUrl.getPreSignedUrl(), imageFile.getAbsolutePath());
     }

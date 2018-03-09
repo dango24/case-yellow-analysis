@@ -19,11 +19,13 @@ public interface UploadFileUtils {
     String FILE_EXTENSION = ".png";
     String INCEPTION_DIR = "inception-snapshots";
 
-    static String generateInceptionSnapshotPath(String label, double confidence, String snapshotHash) {
+    static String generateInceptionSnapshotPath(String label, double confidence, String snapshotHash, String inceptionModel) {
 
         return new StringBuilder().append(INCEPTION_DIR)
                                   .append("/")
                                   .append(snapshotHash)
+                                  .append(DELIMITER)
+                                  .append(inceptionModel)
                                   .append(DELIMITER)
                                   .append(confidence)
                                   .append(DELIMITER)

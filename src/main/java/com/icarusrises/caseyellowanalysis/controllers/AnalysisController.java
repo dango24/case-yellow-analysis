@@ -40,10 +40,14 @@ public class AnalysisController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/analyze-image")
-    public AnalyzedImage analyzeImage(@RequestParam("identifier")String identifier, @RequestBody GoogleVisionRequest googleVisionRequest) {
+    public AnalyzedImage analyzeImage(@RequestParam("identifier")String identifier, @RequestParam("md5")String md5, @RequestBody GoogleVisionRequest googleVisionRequest) {
         logger.info("Received analyzeImage POST request for identifier: " + identifier);
 
         try {
+            if (nonNull(md5)) {
+                MDC.put("correlation-id", md5);
+            }
+
             Map<String, Object> data = createData(identifier, googleVisionRequest);
 
             return analyzerService.analyzeImage(data);
@@ -51,6 +55,8 @@ public class AnalysisController {
         } catch (Exception e) {
             logger.error("Failed to analyze image, " + e.getMessage(), e);
             return AnalyzedImage.AnalyzedImageFailure("Failed to analyze image, " + e.getMessage());
+        } finally {
+            MDC.remove("correlation-id");
         }
     }
 
