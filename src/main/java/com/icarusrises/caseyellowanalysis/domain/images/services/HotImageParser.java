@@ -33,6 +33,7 @@ public class HotImageParser extends ImageTestParser {
     @Override
     public double parseSpeedTest(Map<String, Object> data) throws IOException {
         validateData(data);
+        double result;
         GoogleVisionRequest googleVisionRequest = (GoogleVisionRequest)data.get("file");
         List<WordData> hotIdentifiers;
         data = addNegativeData(data);
@@ -65,7 +66,13 @@ public class HotImageParser extends ImageTestParser {
                 throw new SpeedTestParserException("Failed to parse image, No numbers found");
             }
 
-            return Double.valueOf(floatLocationsInText.get(0).getDescription()); // retrieve the closest word to hot identifier
+            result = Double.valueOf(floatLocationsInText.get(0).getDescription()); // retrieve the closest word to hot identifier
+
+            if (result <= 0) {
+                throw new IllegalArgumentException(String.format("Bezeq image parser result is less than 0, result: %s", result));
+            }
+
+            return result;
 
         } catch (Exception e) {
             logger.error("Failed to parse image, " + e.getMessage(), e);

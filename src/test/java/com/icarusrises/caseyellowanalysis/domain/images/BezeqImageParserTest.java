@@ -31,6 +31,7 @@ public class BezeqImageParserTest {
     private static final String BEZEQ_IMG_LOCATION_5 = "/images/bezeq_5_screenshot.PNG";
     private static final String BEZEQ_IMG_LOCATION_6 = "/images/bezeq_6_screenshot.PNG";
     private static final String BEZEQ_IMG_LOCATION_7 = "/images/bezeq_7_screenshot.PNG";
+    private static final String BEZEQ_IMG_LOCATION_8 = "/images/bezeq_8_screenshot.PNG";
 
     private BezeqImageParser bezeqImageParser;
 
@@ -134,6 +135,15 @@ public class BezeqImageParserTest {
         map.put("file", googleVisionRequest);
 
         assertEquals(String.valueOf(46.6), String.valueOf(bezeqImageParser.parseSpeedTest(map)));
+    }
+
+    @Test (expected = SpeedTestParserException.class)
+    public void parseSpeedTest8() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(BEZEQ_IMG_LOCATION_8).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(1.0), String.valueOf(bezeqImageParser.parseSpeedTest(map)));
     }
 
 }

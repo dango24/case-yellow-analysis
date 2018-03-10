@@ -37,6 +37,7 @@ public class BezeqImageParser extends ImageTestParser {
 
     @Override
     public double parseSpeedTest(Map<String, Object> data) throws IOException {
+        double result;
         validateData(data);
         GoogleVisionRequest googleVisionRequest = (GoogleVisionRequest)data.get("file");
         Map<String, List<WordData>> bezeqIdentifiers;
@@ -73,8 +74,13 @@ public class BezeqImageParser extends ImageTestParser {
                 throw new SpeedTestParserException("Failed to parse image, No numbers found");
             }
 
-            return Double.valueOf(floatLocationsInText.get(0).getDescription()); // retrieve the closest word to bezeqmb identifier
+            result = Double.valueOf(floatLocationsInText.get(0).getDescription()); // retrieve the closest word to bezeqmb identifier
 
+            if (result <= 0) {
+                throw new IllegalArgumentException(String.format("Bezeq image parser result is less than 0, result: %s", result));
+            }
+
+            return result;
 
         } catch (Exception e) {
             logger.error("Failed to parse image, " + e.getMessage(), e);
