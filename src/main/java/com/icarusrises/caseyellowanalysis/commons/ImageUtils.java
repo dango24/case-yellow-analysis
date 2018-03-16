@@ -61,7 +61,7 @@ public interface ImageUtils {
         try{
             img = ImageIO.read(imgFile);
         }catch(IOException e){
-            System.out.println(e);
+            logger.error(e);
         }
         //get image width and height
         int width = img.getWidth();

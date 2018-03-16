@@ -1,6 +1,7 @@
 package com.icarusrises.caseyellowanalysis.domain.inception.services;
 
 import com.icarusrises.caseyellowanalysis.commons.ImageUtils;
+import com.icarusrises.caseyellowanalysis.commons.Utils;
 import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassification;
 import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassificationResult;
 import com.icarusrises.caseyellowanalysis.exceptions.AnalyzerException;
@@ -41,8 +42,10 @@ public class ImageClassifierServiceImpl implements ImageClassifierService {
 
     @Override
     public ImageClassificationResult classifyImage(VisionRequest visionRequest, String identifier) {
+        File imageFile = null;
+
         try {
-            File imageFile = convertBase64ToImage(visionRequest.getImage());
+            imageFile = convertBase64ToImage(visionRequest.getImage());
             logger.info("Start classify image");
             String commandOutput = imageInceptionExecutor.executeInceptionCommand(imageFile.getAbsolutePath());
             List<ImageClassification> imageClassifications = ImageUtils.parseInceptionCommandOutput(commandOutput);
@@ -56,6 +59,9 @@ public class ImageClassifierServiceImpl implements ImageClassifierService {
             logger.error(errorMessage, e);
 
             throw new AnalyzerException(errorMessage, e);
+
+        } finally {
+            Utils.deleteFile(imageFile);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.icarusrises.caseyellowanalysis.domain.images.services;
 
+import com.icarusrises.caseyellowanalysis.commons.Utils;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.services.ImageAnalyzerService;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.services.SpeedTestParser;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.services.SpeedTestParserSupplier;
@@ -73,14 +74,18 @@ public abstract class ImageTestParser implements SpeedTestParser {
     private VisionRequest convertImageToNegative(VisionRequest visionRequest) {
         Image image = visionRequest.getImage();
         File tmpFile = convertBase64ToImage(image);
+        File negativeFile = convertToNegative(tmpFile);
 
         try {
-            File negativeFile = convertToNegative(tmpFile);
             String negativeImage = new String(createImageBase64Encode(negativeFile.getAbsolutePath()), "UTF-8");
             visionRequest.setImage(new Image(negativeImage));
 
         } catch (UnsupportedEncodingException e) {
             logger.error(String.format("Failed to convert file to negative, error message: %s", e.getMessage(), e));
+
+        } finally {
+            Utils.deleteFile(tmpFile);
+            Utils.deleteFile(negativeFile);
         }
 
         return visionRequest;
