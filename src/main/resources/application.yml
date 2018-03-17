@@ -36,6 +36,11 @@ imgParsersIdentifiers:
 # Logger
 log.dir: ${case.yellow.dir}/logs
 
+# Configuration
+
+credentials_path: /home/ec2-user/case-yellow/resources/a.out
+#credentials_path: C:\\Users\\Dan\\Documents\\case yellow\\main.exe
+
 logging:
  level:
    org.springframework.web: ERROR
