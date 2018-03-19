@@ -1,6 +1,4 @@
-package com.icarusrises.caseyellowanalysis.domain.images.model;
-
-import com.icarusrises.caseyellowanalysis.domain.analyzer.model.Point;
+package com.icarusrises.caseyellowanalysis.domain.analyzer.model;
 
 public class PinnedWord {
 

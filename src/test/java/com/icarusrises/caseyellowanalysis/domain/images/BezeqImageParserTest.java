@@ -1,7 +1,7 @@
 package com.icarusrises.caseyellowanalysis.domain.images;
 
 import com.icarusrises.caseyellowanalysis.CaseYellowAnalysisApplication;
-import com.icarusrises.caseyellowanalysis.domain.images.services.BezeqImageParser;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.services.parsers.BezeqImageParser;
 import com.icarusrises.caseyellowanalysis.exceptions.SpeedTestParserException;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
 import org.junit.Test;

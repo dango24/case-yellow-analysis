@@ -1,4 +1,4 @@
-package com.icarusrises.caseyellowanalysis.domain.images.services;
+package com.icarusrises.caseyellowanalysis.domain.analyzer.services.parsers;
 
 import com.icarusrises.caseyellowanalysis.commons.Utils;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.services.ImageAnalyzerService;
