@@ -1,16 +1,10 @@
 package com.icarusrises.caseyellowanalysis.commons;
 
 import com.icarusrises.caseyellowanalysis.domain.analyzer.model.Point;
-import com.icarusrises.caseyellowanalysis.exceptions.AnalyzerException;
-import org.apache.log4j.Logger;
+import com.icarusrises.caseyellowanalysis.exceptions.AnalyzeException;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.function.ToIntFunction;
-
-import static java.util.Objects.nonNull;
 
 public interface PointUtils {
 
@@ -60,7 +54,7 @@ public interface PointUtils {
         return points.stream()
                      .mapToInt(intMinFunction)
                      .min()
-                     .orElseThrow(() -> new AnalyzerException("There is no min point in points: " + points));
+                     .orElseThrow(() -> new AnalyzeException("There is no min point in points: " + points));
     }
 
     static int getMax(ToIntFunction<? super Point> intMaxFunction, List<Point> points) {
@@ -68,6 +62,6 @@ public interface PointUtils {
         return points.stream()
                      .mapToInt(intMaxFunction)
                      .max()
-                     .orElseThrow(() -> new AnalyzerException("There is no max point in points: " + points));
+                     .orElseThrow(() -> new AnalyzeException("There is no max point in points: " + points));
     }
 }

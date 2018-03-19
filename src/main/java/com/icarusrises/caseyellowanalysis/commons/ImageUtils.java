@@ -1,7 +1,7 @@
 package com.icarusrises.caseyellowanalysis.commons;
 
 import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassification;
-import com.icarusrises.caseyellowanalysis.exceptions.AnalyzerException;
+import com.icarusrises.caseyellowanalysis.exceptions.AnalyzeException;
 import com.icarusrises.caseyellowanalysis.exceptions.IORuntimeException;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.Image;
 import org.apache.commons.io.FileUtils;
@@ -94,7 +94,7 @@ public interface ImageUtils {
         }catch(IOException e){
             String errorMessage = format("Failed to convert to negative: ", e.getMessage());
             logger.error(errorMessage);
-            throw new AnalyzerException(errorMessage, e);
+            throw new AnalyzeException(errorMessage, e);
         }
     }
 
@@ -145,7 +145,7 @@ public interface ImageUtils {
             String errorMessage = String.format("Failed to generate image classification from: %s", imageClassificationStr);
             logger.error(errorMessage);
 
-            throw new AnalyzerException(errorMessage);
+            throw new AnalyzeException(errorMessage);
         }
     }
 }

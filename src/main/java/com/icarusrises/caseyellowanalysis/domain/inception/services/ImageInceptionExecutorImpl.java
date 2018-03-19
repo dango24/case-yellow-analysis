@@ -1,6 +1,6 @@
 package com.icarusrises.caseyellowanalysis.domain.inception.services;
 
-import com.icarusrises.caseyellowanalysis.exceptions.AnalyzerException;
+import com.icarusrises.caseyellowanalysis.exceptions.AnalyzeException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,7 +43,7 @@ public class ImageInceptionExecutorImpl implements ImageInceptionExecutor {
             String errorMessage = String.format("Failed to execute inception command, cause: ", e.getMessage());
             log.error(errorMessage, e);
 
-            throw new AnalyzerException(errorMessage, e);
+            throw new AnalyzeException(errorMessage, e);
         }
     }
 
@@ -56,7 +56,7 @@ public class ImageInceptionExecutorImpl implements ImageInceptionExecutor {
             String errorMessage = String.format("Failed to read input data from inception service, cause: ", e.getMessage());
             log.error(errorMessage, e);
 
-            throw new AnalyzerException(errorMessage, e);
+            throw new AnalyzeException(errorMessage, e);
         }
     }
 }

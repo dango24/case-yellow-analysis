@@ -1,5 +1,6 @@
 package com.icarusrises.caseyellowanalysis.controllers;
 
+import com.icarusrises.caseyellowanalysis.exceptions.AnalyzeException;
 import org.apache.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,14 @@ public class ControllerExceptionHandler {
 
     private static final int INTERNAL_ERROR_CODE = 420;
     private static final int ILLEGAL_ARGUMENT_ERROR_CODE = 601;
+    private static final int ANALYZE_ERROR_CODE = 602;
+
+
+    @ExceptionHandler(AnalyzeException.class)
+    public ResponseEntity<ErrorResponse> handleAnalyzerException(AnalyzeException ex)  {
+        logger.error(ex.getMessage(), ex);
+        return buildErrorResponse(ANALYZE_ERROR_CODE, ex.getMessage());
+    }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(Exception ex)  {

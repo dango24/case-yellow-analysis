@@ -2,8 +2,11 @@ package com.icarusrises.caseyellowanalysis.controllers;
 
 import com.icarusrises.caseyellowanalysis.domain.analyzer.model.AnalyzedImage;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.services.ImageAnalyzerService;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.DescriptionMatch;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.text.services.TextAnalyzerService;
 import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassificationResult;
 import com.icarusrises.caseyellowanalysis.domain.inception.services.ImageClassifierService;
+import com.icarusrises.caseyellowanalysis.exceptions.AnalyzeException;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.VisionRequest;
@@ -11,7 +14,6 @@ import com.icarusrises.caseyellowanalysis.services.googlevision.services.OcrServ
 import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -28,15 +30,31 @@ public class AnalysisController {
     private OcrService ocrService;
     private ImageAnalyzerService imageAnalyzerService;
     private ImageClassifierService imageClassifierService;
+    private TextAnalyzerService textAnalyzerService;
 
     @Autowired
-    public AnalysisController(ImageAnalyzerService imageAnalyzerService, ImageClassifierService imageClassifierService, OcrService ocrService) {
-        this.imageAnalyzerService = imageAnalyzerService;
+    public AnalysisController(TextAnalyzerService textAnalyzerService, ImageAnalyzerService imageAnalyzerService, ImageClassifierService imageClassifierService, OcrService ocrService) {
         this.ocrService = ocrService;
+        this.imageAnalyzerService = imageAnalyzerService;
+        this.textAnalyzerService = textAnalyzerService;
         this.imageClassifierService = imageClassifierService;
     }
 
-    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/is-description-exist")
+    public DescriptionMatch isDescriptionExist(@RequestParam("identifier")String identifier,
+                                               @RequestParam("startTest")boolean startTest,
+                                               @RequestBody GoogleVisionRequest visionRequest) throws AnalyzeException {
+
+        log.info("Received isDescriptionExist POST request for identifier: " + identifier);
+        return textAnalyzerService.isDescriptionExist(identifier, startTest, visionRequest);
+    }
+
+    @GetMapping("/parse-html")
+    public String retrieveResultFromHtml(@RequestParam("identifier")String identifier, @RequestParam("htmlPayload") String htmlPayload) throws AnalyzeException {
+        log.info("Received isDescriptionExist POST request for identifier: " + identifier);
+        return textAnalyzerService.retrieveResultFromHtml(identifier, htmlPayload);
+    }
+
     @PostMapping("/analyze-image")
     public AnalyzedImage analyzeImage(@RequestParam("identifier")String identifier, @RequestParam("md5")String md5, @RequestBody GoogleVisionRequest googleVisionRequest) {
         try {
@@ -57,7 +75,6 @@ public class AnalysisController {
         }
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @PostMapping("/classify-image")
     public ImageClassificationResult classifyImage(@RequestParam("md5") String md5, @RequestParam("identifier")String identifier, @RequestBody VisionRequest visionRequest)  {
         try {
@@ -73,7 +90,6 @@ public class AnalysisController {
         }
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @PostMapping("/ocr_request")
     public OcrResponse ocrRequest(@RequestBody GoogleVisionRequest googleVisionRequest) throws IOException {
         log.info("Received ocrRequest POST request");

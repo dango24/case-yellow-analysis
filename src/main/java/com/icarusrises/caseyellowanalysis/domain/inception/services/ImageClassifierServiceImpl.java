@@ -1,10 +1,9 @@
 package com.icarusrises.caseyellowanalysis.domain.inception.services;
 
 import com.icarusrises.caseyellowanalysis.commons.ImageUtils;
-import com.icarusrises.caseyellowanalysis.commons.PointUtils;
 import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassification;
 import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassificationResult;
-import com.icarusrises.caseyellowanalysis.exceptions.AnalyzerException;
+import com.icarusrises.caseyellowanalysis.exceptions.AnalyzeException;
 import com.icarusrises.caseyellowanalysis.services.central.CentralService;
 import com.icarusrises.caseyellowanalysis.services.central.PreSignedUrl;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.VisionRequest;
@@ -59,7 +58,7 @@ public class ImageClassifierServiceImpl implements ImageClassifierService {
             String errorMessage = String.format("Failed to classify image: %s", e.getMessage());
             logger.error(errorMessage, e);
 
-            throw new AnalyzerException(errorMessage, e);
+            throw new AnalyzeException(errorMessage, e);
 
         } finally {
             deleteFile(imageFile);

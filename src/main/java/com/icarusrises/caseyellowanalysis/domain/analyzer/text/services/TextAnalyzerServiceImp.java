@@ -7,7 +7,7 @@ import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.Description
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.DescriptionMatch;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.SpeedTestNonFlashMetaData;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.WordIdentifier;
-import com.icarusrises.caseyellowanalysis.exceptions.AnalyzerException;
+import com.icarusrises.caseyellowanalysis.exceptions.AnalyzeException;
 import com.icarusrises.caseyellowanalysis.services.central.CentralService;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;
@@ -47,13 +47,13 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
         return retrieveResultFromHtml(htmlPayload, speedTestNonFlashMetaData.getFinishTextIdentifier(), speedTestNonFlashMetaData.getFinishIdentifierKbps(), 1);
     }
 
-    private String retrieveResultFromHtml(String htmlPayload, List<String> MbpsRegex, List<String> KbpsRegex, int groupNumber) throws AnalyzerException {
+    private String retrieveResultFromHtml(String htmlPayload, List<String> MbpsRegex, List<String> KbpsRegex, int groupNumber) throws AnalyzeException {
 
         boolean MbpsMatcher = verifyPatterns(MbpsRegex, htmlPayload);
         boolean KbpsMatcher = verifyPatterns(KbpsRegex, htmlPayload);
 
         if (MbpsMatcher && KbpsMatcher) {
-            throw new AnalyzerException("Failure to find finish test identifier, Found Kbps and Mbps matchers");
+            throw new AnalyzeException("Failure to find finish test identifier, Found Kbps and Mbps matchers");
 
         } else if (MbpsMatcher) {
             return retrieveLastMatcher(MbpsRegex, htmlPayload,groupNumber); // regex matcher result
@@ -66,7 +66,7 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
     }
 
     @Override
-    public DescriptionMatch isDescriptionExist(String identifier, boolean startTest, GoogleVisionRequest visionRequest) throws AnalyzerException {
+    public DescriptionMatch isDescriptionExist(String identifier, boolean startTest, GoogleVisionRequest visionRequest) throws AnalyzeException {
         try {
             OcrResponse ocrResponse = ocrService.parseImage(visionRequest);
             Set<WordIdentifier> textIdentifiers = centralService.getTextIdentifiers(identifier, startTest);
@@ -74,7 +74,7 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
             return buildDescriptionMatch(textIdentifiers, ocrResponse.getTextAnnotations());
 
         } catch (Exception e) {
-            throw new AnalyzerException(String.format("Failed to find description in image, %s", e.getMessage()), e);
+            throw new AnalyzeException(String.format("Failed to find description in image, %s", e.getMessage()), e);
         }
     }
 
@@ -122,7 +122,7 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
         if (textIdentifiers.isEmpty() || words.isEmpty()) {
             return DescriptionMatch.notFound();
         } else if (textIdentifiers.size() > 2) {
-            throw new AnalyzerException("Not supported more than two words for matching description");
+            throw new AnalyzeException("Not supported more than two words for matching description");
         }
 
         matchWordsInText = findMatchingWords(textIdentifiers, words);
