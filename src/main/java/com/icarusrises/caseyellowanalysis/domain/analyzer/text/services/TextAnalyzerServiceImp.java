@@ -5,9 +5,15 @@ import com.icarusrises.caseyellowanalysis.domain.analyzer.model.Point;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.model.WordData;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.DescriptionLocation;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.DescriptionMatch;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.SpeedTestNonFlashMetaData;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.WordIdentifier;
 import com.icarusrises.caseyellowanalysis.exceptions.AnalyzerException;
+import com.icarusrises.caseyellowanalysis.services.central.CentralService;
+import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
+import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;
+import com.icarusrises.caseyellowanalysis.services.googlevision.services.OcrService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -25,8 +31,23 @@ import static java.util.stream.Collectors.*;
 @Service
 public class TextAnalyzerServiceImp implements TextAnalyzerService {
 
+    private OcrService ocrService;
+    private CentralService centralService;
+
+    @Autowired
+    public TextAnalyzerServiceImp(CentralService centralService, OcrService ocrService) {
+        this.ocrService = ocrService;
+        this.centralService = centralService;
+    }
+
     @Override
-    public String retrieveResultFromHtml(String htmlPayload, List<String> MbpsRegex, List<String> KbpsRegex, int groupNumber) throws AnalyzerException {
+    public String retrieveResultFromHtml(String identifier, String htmlPayload) {
+        SpeedTestNonFlashMetaData speedTestNonFlashMetaData = centralService.getSpeedTestNonFlashMetaData(identifier);
+
+        return retrieveResultFromHtml(htmlPayload, speedTestNonFlashMetaData.getFinishTextIdentifier(), speedTestNonFlashMetaData.getFinishIdentifierKbps(), 1);
+    }
+
+    private String retrieveResultFromHtml(String htmlPayload, List<String> MbpsRegex, List<String> KbpsRegex, int groupNumber) throws AnalyzerException {
 
         boolean MbpsMatcher = verifyPatterns(MbpsRegex, htmlPayload);
         boolean KbpsMatcher = verifyPatterns(KbpsRegex, htmlPayload);
@@ -41,16 +62,19 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
             return convertKbpsToMbps(retrieveLastMatcher(KbpsRegex, htmlPayload, groupNumber));
         }
 
-        return null;
+        return "FAILED";
     }
 
     @Override
-    public DescriptionMatch isDescriptionExist(Set<WordIdentifier> textIdentifiers, List<WordData> words) throws AnalyzerException {
+    public DescriptionMatch isDescriptionExist(String identifier, boolean startTest, GoogleVisionRequest visionRequest) throws AnalyzerException {
         try {
-            return buildDescriptionMatch(textIdentifiers, words);
+            OcrResponse ocrResponse = ocrService.parseImage(visionRequest);
+            Set<WordIdentifier> textIdentifiers = centralService.getTextIdentifiers(identifier, startTest);
 
-        }catch (Exception e) {
-            throw new AnalyzerException(e.getMessage(), e);
+            return buildDescriptionMatch(textIdentifiers, ocrResponse.getTextAnnotations());
+
+        } catch (Exception e) {
+            throw new AnalyzerException(String.format("Failed to find description in image, %s", e.getMessage()), e);
         }
     }
 
