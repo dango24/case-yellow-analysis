@@ -1,7 +1,7 @@
 package com.icarusrises.caseyellowanalysis.domain.inception.services;
 
 import com.icarusrises.caseyellowanalysis.commons.ImageUtils;
-import com.icarusrises.caseyellowanalysis.commons.Utils;
+import com.icarusrises.caseyellowanalysis.commons.PointUtils;
 import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassification;
 import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassificationResult;
 import com.icarusrises.caseyellowanalysis.exceptions.AnalyzerException;
@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import static com.icarusrises.caseyellowanalysis.commons.FileUtils.deleteFile;
 import static com.icarusrises.caseyellowanalysis.commons.ImageUtils.convertBase64ToImage;
 import static com.icarusrises.caseyellowanalysis.commons.UploadFileUtils.generateInceptionSnapshotPath;
 import static com.icarusrises.caseyellowanalysis.commons.UploadFileUtils.uploadObject;
@@ -61,7 +62,7 @@ public class ImageClassifierServiceImpl implements ImageClassifierService {
             throw new AnalyzerException(errorMessage, e);
 
         } finally {
-            Utils.deleteFile(imageFile);
+            deleteFile(imageFile);
         }
     }
 

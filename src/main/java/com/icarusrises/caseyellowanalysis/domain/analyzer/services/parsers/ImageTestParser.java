@@ -1,6 +1,6 @@
 package com.icarusrises.caseyellowanalysis.domain.analyzer.services.parsers;
 
-import com.icarusrises.caseyellowanalysis.commons.Utils;
+import com.icarusrises.caseyellowanalysis.commons.PointUtils;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.services.ImageAnalyzerService;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.services.SpeedTestParser;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.services.SpeedTestParserSupplier;
@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.icarusrises.caseyellowanalysis.commons.FileUtils.deleteFile;
 import static com.icarusrises.caseyellowanalysis.commons.ImageUtils.convertBase64ToImage;
 import static com.icarusrises.caseyellowanalysis.commons.ImageUtils.convertToNegative;
 import static com.icarusrises.caseyellowanalysis.commons.ImageUtils.createImageBase64Encode;
@@ -84,8 +85,8 @@ public abstract class ImageTestParser implements SpeedTestParser {
             logger.error(String.format("Failed to convert file to negative, error message: %s", e.getMessage(), e));
 
         } finally {
-            Utils.deleteFile(tmpFile);
-            Utils.deleteFile(negativeFile);
+            deleteFile(tmpFile);
+            deleteFile(negativeFile);
         }
 
         return visionRequest;

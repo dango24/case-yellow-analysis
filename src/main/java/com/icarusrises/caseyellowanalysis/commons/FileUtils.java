@@ -8,9 +8,9 @@ import java.nio.file.Files;
 
 import static java.util.Objects.nonNull;
 
-public interface Utils {
+public interface FileUtils {
 
-    Logger log = Logger.getLogger(Utils.class);
+    Logger log = Logger.getLogger(PointUtils.class);
 
     static void deleteFile(File file) {
         try {
