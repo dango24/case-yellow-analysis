@@ -3,10 +3,7 @@ package com.icarusrises.caseyellowanalysis.domain.analyzer.text.services;
 import com.icarusrises.caseyellowanalysis.commons.PointUtils;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.model.Point;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.model.WordData;
-import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.DescriptionLocation;
-import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.DescriptionMatch;
-import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.SpeedTestNonFlashMetaData;
-import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.WordIdentifier;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.*;
 import com.icarusrises.caseyellowanalysis.exceptions.AnalyzeException;
 import com.icarusrises.caseyellowanalysis.services.central.CentralService;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
@@ -25,6 +22,7 @@ import java.util.stream.Collectors;
 
 import static com.icarusrises.caseyellowanalysis.commons.PointUtils.calcPointDistance;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.*;
 
 @Slf4j
@@ -41,14 +39,16 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
     }
 
     @Override
-    public String retrieveResultFromHtml(String identifier, String htmlPayload) {
+    public HTMLParserResult retrieveResultFromHtml(String identifier, HTMLPayload htmlPayload) {
         SpeedTestNonFlashMetaData speedTestNonFlashMetaData = centralService.getSpeedTestNonFlashMetaData(identifier);
 
-        return retrieveResultFromHtml(htmlPayload, speedTestNonFlashMetaData.getFinishTextIdentifier(), speedTestNonFlashMetaData.getFinishIdentifierKbps(), 1);
+        return retrieveResultFromHtml(speedTestNonFlashMetaData, htmlPayload.getPayload(), 1);
     }
 
-    private String retrieveResultFromHtml(String htmlPayload, List<String> MbpsRegex, List<String> KbpsRegex, int groupNumber) throws AnalyzeException {
+    private HTMLParserResult retrieveResultFromHtml(SpeedTestNonFlashMetaData speedTestNonFlashMetaData, String htmlPayload, int groupNumber) throws AnalyzeException {
 
+        List<String> MbpsRegex = speedTestNonFlashMetaData.getFinishIdentifierMbps();
+        List<String> KbpsRegex = speedTestNonFlashMetaData.getFinishIdentifierKbps();
         boolean MbpsMatcher = verifyPatterns(MbpsRegex, htmlPayload);
         boolean KbpsMatcher = verifyPatterns(KbpsRegex, htmlPayload);
 
@@ -56,13 +56,13 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
             throw new AnalyzeException("Failure to find finish test identifier, Found Kbps and Mbps matchers");
 
         } else if (MbpsMatcher) {
-            return retrieveLastMatcher(MbpsRegex, htmlPayload,groupNumber); // regex matcher result
+            return retrieveLastMatcher(speedTestNonFlashMetaData, htmlPayload,groupNumber); // regex matcher result
 
         } else if (KbpsMatcher) {
-            return convertKbpsToMbps(retrieveLastMatcher(KbpsRegex, htmlPayload, groupNumber));
+            return convertKbpsToMbps(retrieveLastMatcher(speedTestNonFlashMetaData, htmlPayload, groupNumber));
         }
 
-        return "FAILED";
+        return HTMLParserResult.failure();
     }
 
     @Override
@@ -91,12 +91,28 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
     }
 
 
-    private String retrieveLastMatcher(List<String> regex, String payload, int groupNumber) {
-        if (isNull(regex) || regex.isEmpty() || StringUtils.isEmpty(regex.get(regex.size() -1))) {
-            return null;
+    private HTMLParserResult retrieveLastMatcher(SpeedTestNonFlashMetaData speedTestNonFlashMetaData, String payload, int groupNumber) {
+        if (!validateRegex(speedTestNonFlashMetaData)) {
+            return HTMLParserResult.failure();
         }
 
-        Pattern pattern = Pattern.compile(regex.get(regex.size() -1));
+        String result =
+                retrieveResultFromPayload(speedTestNonFlashMetaData.getRetrieveResultFromPayloadFloat(), payload, groupNumber);
+
+        if (isNull(result)) {
+            result =
+                retrieveResultFromPayload(speedTestNonFlashMetaData.getRetrieveResultFromPayloadInteger(), payload, groupNumber);
+        }
+
+        if (nonNull(result)) {
+            return new HTMLParserResult(result);
+        } else {
+            return HTMLParserResult.failure();
+        }
+    }
+
+    private String retrieveResultFromPayload(String regex, String payload, int groupNumber) {
+        Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(payload);
 
         if (matcher.find()) {
@@ -106,13 +122,25 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
         return null;
     }
 
-    private String convertKbpsToMbps(String KbpsResultStr) {
-        if (StringUtils.isEmpty(KbpsResultStr)) {
-            return null;
+    private boolean validateRegex(SpeedTestNonFlashMetaData speedTestNonFlashMetaData) {
+        List<String> regex = Arrays.asList(speedTestNonFlashMetaData.getRetrieveResultFromPayloadFloat(), speedTestNonFlashMetaData.getRetrieveResultFromPayloadInteger());
+
+        if (isNull(regex) || regex.isEmpty() || regex.stream().anyMatch(StringUtils::isEmpty)) {
+            return false;
         }
 
+        return true;
+    }
+
+    private HTMLParserResult convertKbpsToMbps(HTMLParserResult htmlParserResult) {
+        if (isNull(htmlParserResult) || StringUtils.isEmpty(htmlParserResult.getResult())) {
+            return HTMLParserResult.failure();
+        }
+
+        String KbpsResultStr = htmlParserResult.getResult();
         double KbpsResult = Double.valueOf(KbpsResultStr) / 1_000.0;
-        return String.valueOf(KbpsResult);
+
+        return new HTMLParserResult(String.valueOf(KbpsResult));
     }
 
     private DescriptionMatch buildDescriptionMatch(Set<WordIdentifier> textIdentifiers, List<WordData> words) {

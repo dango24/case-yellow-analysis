@@ -4,10 +4,7 @@ import com.icarusrises.caseyellowanalysis.exceptions.RequestFailureException;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -51,8 +48,10 @@ public interface UploadFileUtils {
     static void uploadObject(HttpURLConnection connection, File fileToUpload) {
         int responseCode;
 
-        try (DataOutputStream dataStream = new DataOutputStream(connection.getOutputStream())) {
-            dataStream.write(IOUtils.toByteArray(new FileInputStream(fileToUpload)));
+        try (DataOutputStream dataStream = new DataOutputStream(connection.getOutputStream());
+             InputStream inputStream = new FileInputStream(fileToUpload)) {
+
+            dataStream.write(IOUtils.toByteArray(inputStream));
             responseCode = connection.getResponseCode(); // Invoke request
 
             if (isRequestSuccessful(responseCode)) {
