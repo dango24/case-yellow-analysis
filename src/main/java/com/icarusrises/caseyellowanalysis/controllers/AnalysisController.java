@@ -3,8 +3,8 @@ package com.icarusrises.caseyellowanalysis.controllers;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.model.AnalyzedImage;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.services.ImageAnalyzerService;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.DescriptionMatch;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.HTMLParserRequest;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.HTMLParserResult;
-import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.HTMLPayload;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.services.TextAnalyzerService;
 import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassificationResult;
 import com.icarusrises.caseyellowanalysis.domain.inception.services.ImageClassifierService;
@@ -52,9 +52,9 @@ public class AnalysisController {
     }
 
     @PostMapping("/parse-html")
-    public HTMLParserResult retrieveResultFromHtml(@RequestParam("identifier")String identifier, @RequestBody HTMLPayload htmlPayload) throws AnalyzeException {
+    public HTMLParserResult retrieveResultFromHtml(@RequestParam("identifier")String identifier, @RequestBody HTMLParserRequest htmlParserRequest) throws AnalyzeException {
         log.info("Received isDescriptionExist POST request for identifier: " + identifier);
-        return textAnalyzerService.retrieveResultFromHtml(identifier, htmlPayload);
+        return textAnalyzerService.retrieveResultFromHtml(identifier, htmlParserRequest);
     }
 
     @PostMapping("/analyze-image")

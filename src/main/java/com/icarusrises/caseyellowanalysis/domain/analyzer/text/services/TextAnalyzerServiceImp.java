@@ -39,10 +39,10 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
     }
 
     @Override
-    public HTMLParserResult retrieveResultFromHtml(String identifier, HTMLPayload htmlPayload) {
+    public HTMLParserResult retrieveResultFromHtml(String identifier, HTMLParserRequest htmlParserRequest) {
         SpeedTestNonFlashMetaData speedTestNonFlashMetaData = centralService.getSpeedTestNonFlashMetaData(identifier);
 
-        return retrieveResultFromHtml(speedTestNonFlashMetaData, htmlPayload.getPayload(), 1);
+        return retrieveResultFromHtml(speedTestNonFlashMetaData, htmlParserRequest.getPayload(), 1);
     }
 
     private HTMLParserResult retrieveResultFromHtml(SpeedTestNonFlashMetaData speedTestNonFlashMetaData, String htmlPayload, int groupNumber) throws AnalyzeException {
