@@ -1,6 +1,6 @@
 package com.icarusrises.caseyellowanalysis.commons;
 
-import com.icarusrises.caseyellowanalysis.domain.analyzer.model.Point;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.Point;
 import com.icarusrises.caseyellowanalysis.exceptions.AnalyzeException;
 
 import java.util.List;

@@ -1,9 +1,10 @@
 package com.icarusrises.caseyellowanalysis.domain.images;
 
 import com.icarusrises.caseyellowanalysis.CaseYellowAnalysisApplication;
-import com.icarusrises.caseyellowanalysis.domain.analyzer.services.parsers.BezeqImageParser;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.services.parsers.BezeqImageParser;
 import com.icarusrises.caseyellowanalysis.exceptions.SpeedTestParserException;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CaseYellowAnalysisApplication.class)
 @ActiveProfiles("dev")
+@Ignore
 public class BezeqImageParserTest {
 
     private static final String BEZEQ_IMG_LOCATION_0 = "/images/bezeq_0_screenshot.PNG";

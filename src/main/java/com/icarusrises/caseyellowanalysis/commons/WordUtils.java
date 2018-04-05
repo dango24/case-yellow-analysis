@@ -1,8 +1,8 @@
 package com.icarusrises.caseyellowanalysis.commons;
 
-import com.icarusrises.caseyellowanalysis.domain.analyzer.model.Point;
-import com.icarusrises.caseyellowanalysis.domain.analyzer.model.WordData;
-import com.icarusrises.caseyellowanalysis.domain.analyzer.model.PinnedWord;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.Point;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.WordData;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.PinnedWord;
 
 import java.util.function.ToIntFunction;
 

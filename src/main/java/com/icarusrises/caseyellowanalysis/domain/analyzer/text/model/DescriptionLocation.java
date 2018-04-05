@@ -1,6 +1,6 @@
 package com.icarusrises.caseyellowanalysis.domain.analyzer.text.model;
 
-import com.icarusrises.caseyellowanalysis.domain.analyzer.model.Point;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.Point;
 import lombok.Data;
 
 @Data

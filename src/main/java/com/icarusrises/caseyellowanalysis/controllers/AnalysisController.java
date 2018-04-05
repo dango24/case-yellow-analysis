@@ -1,7 +1,7 @@
 package com.icarusrises.caseyellowanalysis.controllers;
 
-import com.icarusrises.caseyellowanalysis.domain.analyzer.model.AnalyzedImage;
-import com.icarusrises.caseyellowanalysis.domain.analyzer.services.ImageAnalyzerService;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.AnalyzedImage;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.services.ImageAnalyzerService;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.DescriptionMatch;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.HTMLParserRequest;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.HTMLParserResult;

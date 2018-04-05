@@ -1,6 +1,6 @@
-package com.icarusrises.caseyellowanalysis.domain.analyzer.services;
+package com.icarusrises.caseyellowanalysis.domain.analyzer.image.services;
 
-import com.icarusrises.caseyellowanalysis.domain.analyzer.model.AnalyzedImage;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.AnalyzedImage;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;
 import com.icarusrises.caseyellowanalysis.services.googlevision.services.OcrService;

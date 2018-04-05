@@ -1,8 +1,8 @@
 package com.icarusrises.caseyellowanalysis.domain.analyzer.text.services;
 
 import com.icarusrises.caseyellowanalysis.commons.PointUtils;
-import com.icarusrises.caseyellowanalysis.domain.analyzer.model.Point;
-import com.icarusrises.caseyellowanalysis.domain.analyzer.model.WordData;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.Point;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.WordData;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.*;
 import com.icarusrises.caseyellowanalysis.exceptions.AnalyzeException;
 import com.icarusrises.caseyellowanalysis.services.central.CentralService;

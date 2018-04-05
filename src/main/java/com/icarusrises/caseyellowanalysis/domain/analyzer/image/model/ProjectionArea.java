@@ -1,4 +1,4 @@
-package com.icarusrises.caseyellowanalysis.domain.analyzer.model;
+package com.icarusrises.caseyellowanalysis.domain.analyzer.image.model;
 
 public class ProjectionArea {
 

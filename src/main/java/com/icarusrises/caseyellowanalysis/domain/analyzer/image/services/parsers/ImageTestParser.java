@@ -1,9 +1,8 @@
-package com.icarusrises.caseyellowanalysis.domain.analyzer.services.parsers;
+package com.icarusrises.caseyellowanalysis.domain.analyzer.image.services.parsers;
 
-import com.icarusrises.caseyellowanalysis.commons.PointUtils;
-import com.icarusrises.caseyellowanalysis.domain.analyzer.services.ImageAnalyzerService;
-import com.icarusrises.caseyellowanalysis.domain.analyzer.services.SpeedTestParser;
-import com.icarusrises.caseyellowanalysis.domain.analyzer.services.SpeedTestParserSupplier;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.services.ImageAnalyzerService;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.services.SpeedTestParser;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.services.SpeedTestParserSupplier;
 import com.icarusrises.caseyellowanalysis.exceptions.SpeedTestParserException;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.Image;

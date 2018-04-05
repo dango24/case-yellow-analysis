@@ -1,10 +1,11 @@
 package com.icarusrises.caseyellowanalysis.domain;
 
 import com.icarusrises.caseyellowanalysis.CaseYellowAnalysisApplication;
-import com.icarusrises.caseyellowanalysis.domain.analyzer.model.WordData;
-import com.icarusrises.caseyellowanalysis.domain.analyzer.services.ImageAnalyzerService;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.WordData;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.services.ImageAnalyzerService;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CaseYellowAnalysisApplication.class)
 @ActiveProfiles("dev")
+@Ignore
 public class ImageAnalyzerServiceImplTest {
 
     private static final String HOT_IMG_LOCATION = "/images/hot_0_screenshot.PNG";

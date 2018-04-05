@@ -1,8 +1,8 @@
-package com.icarusrises.caseyellowanalysis.domain.analyzer.services.parsers;
+package com.icarusrises.caseyellowanalysis.domain.analyzer.image.services.parsers;
 
 import com.icarusrises.caseyellowanalysis.commons.WordUtils;
-import com.icarusrises.caseyellowanalysis.domain.analyzer.model.WordData;
-import com.icarusrises.caseyellowanalysis.domain.analyzer.model.PinnedWord;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.WordData;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.PinnedWord;
 import com.icarusrises.caseyellowanalysis.exceptions.SpeedTestParserException;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;

@@ -1,7 +1,7 @@
 package com.icarusrises.caseyellowanalysis.services.googlevision.model;
 
 
-import com.icarusrises.caseyellowanalysis.domain.analyzer.model.WordData;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.WordData;
 
 import java.util.List;
 

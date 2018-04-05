@@ -1,9 +1,10 @@
 package com.icarusrises.caseyellowanalysis.domain.images;
 
 import com.icarusrises.caseyellowanalysis.CaseYellowAnalysisApplication;
-import com.icarusrises.caseyellowanalysis.domain.analyzer.services.parsers.HotImageParser;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.services.parsers.HotImageParser;
 import com.icarusrises.caseyellowanalysis.exceptions.SpeedTestParserException;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CaseYellowAnalysisApplication.class)
 @ActiveProfiles("dev")
+@Ignore
 public class HotImageParserTest {
 
     private static final String HOT_IMG_LOCATION_0 = "/images/hot_0_screenshot.PNG";

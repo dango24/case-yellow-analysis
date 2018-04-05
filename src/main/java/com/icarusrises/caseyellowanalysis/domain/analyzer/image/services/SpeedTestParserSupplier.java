@@ -1,4 +1,4 @@
-package com.icarusrises.caseyellowanalysis.domain.analyzer.services;
+package com.icarusrises.caseyellowanalysis.domain.analyzer.image.services;
 
 import com.icarusrises.caseyellowanalysis.exceptions.SpeedTestParserException;
 import org.springframework.stereotype.Component;

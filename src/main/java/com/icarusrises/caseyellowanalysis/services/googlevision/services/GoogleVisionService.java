@@ -10,6 +10,7 @@ import com.icarusrises.caseyellowanalysis.services.infrastrucre.RequestHandler;
 import com.icarusrises.caseyellowanalysis.services.infrastrucre.RetrofitBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import retrofit2.Retrofit;
 
@@ -17,6 +18,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 
 @Service
+@Profile("prod")
 public class GoogleVisionService implements OcrService {
 
     @Value("${google_vision_url}")
