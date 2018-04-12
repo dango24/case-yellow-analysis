@@ -8,6 +8,7 @@ import com.icarusrises.caseyellowanalysis.queues.model.QueueMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.retry.annotation.Backoff;
@@ -20,6 +21,7 @@ import javax.jms.Session;
 
 @Slf4j
 @Service
+@Profile("prod")
 public class ImageAnalysisResultProducer implements MessageProducerService {
 
     @Value("${sqs.central.queue}")

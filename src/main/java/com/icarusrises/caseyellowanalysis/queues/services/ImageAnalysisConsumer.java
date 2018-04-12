@@ -12,6 +12,7 @@ import org.apache.log4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,7 @@ import static java.util.Objects.nonNull;
 
 @Slf4j
 @Component
+@Profile("prod")
 @ConfigurationProperties(prefix = "image_analyze")
 public class ImageAnalysisConsumer {
 

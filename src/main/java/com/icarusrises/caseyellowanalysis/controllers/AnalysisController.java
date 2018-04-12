@@ -16,16 +16,17 @@ import com.icarusrises.caseyellowanalysis.services.googlevision.services.OcrServ
 import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import static com.icarusrises.caseyellowanalysis.commons.ImageUtils.createData;
 import static java.util.Objects.nonNull;
 
 @Slf4j
+@Profile("prod")
 @RestController
 @RequestMapping("/analysis")
 public class AnalysisController {
