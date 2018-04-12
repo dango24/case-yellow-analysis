@@ -1,9 +1,15 @@
 package com.icarusrises.caseyellowanalysis.domain.analyzer.image.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AnalyzedImage {
 
     private double result;
     private String message;
+    private String path;
     private boolean analyzed;
 
     public AnalyzedImage() {
@@ -26,22 +32,6 @@ public class AnalyzedImage {
         this.result = result;
         this.message = message;
         this.analyzed = analyzed;
-    }
-
-    public boolean isAnalyzed() {
-        return analyzed;
-    }
-
-    public void setAnalyzed(boolean analyzed) {
-        this.analyzed = analyzed;
-    }
-
-    public double getResult() {
-        return result;
-    }
-
-    public void setResult(double result) {
-        this.result = result;
     }
 
     public static AnalyzedImage AnalyzedImageFailure(String message) {

@@ -3,6 +3,7 @@ package com.icarusrises.caseyellowanalysis.commons;
 import com.icarusrises.caseyellowanalysis.domain.inception.model.ImageClassification;
 import com.icarusrises.caseyellowanalysis.exceptions.AnalyzeException;
 import com.icarusrises.caseyellowanalysis.exceptions.IORuntimeException;
+import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.Image;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -15,7 +16,9 @@ import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
@@ -24,6 +27,14 @@ import static java.util.stream.Collectors.toList;
 public interface ImageUtils {
 
     Logger logger = Logger.getLogger(ImageUtils.class);
+
+    static Map<String, Object> createData(String identifier, GoogleVisionRequest googleVisionRequest) {
+        Map<String,Object> data = new HashMap<>();
+        data.put("identifier", identifier);
+        data.put("file", googleVisionRequest);
+
+        return data;
+    }
 
     static File getImgFromResources(String path) throws IOException {
         InputStream resourceAsStream = UploadFileUtils.class.getResourceAsStream(path);

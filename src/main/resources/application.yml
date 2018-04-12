@@ -9,6 +9,13 @@ google_vision_url : https://vision.googleapis.com/
 
 central_url: http://localhost:9080
 encryption_key: nokey
+bucket_name: case-yellow-snapshot
+snapshot_dir: successful-tests/
+
+image_analyze:
+  identifiers:
+    - hot
+    - bezeq
 
 # MultiPart properties
 spring.http.multipart.max-file-size: 5MB
@@ -37,7 +44,11 @@ imgParsersIdentifiers:
 # Logger
 log.dir: ${case.yellow.dir}/logs
 
-# Configuration
+#SQS
+sqs.queue.endpoint: https://sqs.eu-central-1.amazonaws.com
+sqs.analyze_snapshot.queue: cy-analyze-snapshot-queue
+sqs.central.queue: cy-central-queue
+
 
 credentials_path: /home/ec2-user/case-yellow/resources/a.out
 #credentials_path: /home/dango/Documents/case-yellow/a.out

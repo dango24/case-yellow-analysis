@@ -17,7 +17,7 @@ import java.security.NoSuchAlgorithmException;
 @Slf4j
 @Configuration
 @Profile("prod")
-public class ConfigurationServiceImpl implements ConfigurationManager {
+public class ConfigurationManagerImpl implements ConfigurationManager {
 
     @Value("${credentials_path}")
     private String credentialsPath;

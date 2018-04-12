@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.icarusrises.caseyellowanalysis.commons.ImageUtils.createData;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -96,13 +97,5 @@ public class AnalysisController {
     public OcrResponse ocrRequest(@RequestBody GoogleVisionRequest googleVisionRequest) throws IOException {
         log.info("Received ocrRequest POST request");
         return ocrService.parseImage(googleVisionRequest);
-    }
-
-    private Map<String, Object> createData(String identifier, GoogleVisionRequest googleVisionRequest) {
-        Map<String,Object> data = new HashMap<>();
-        data.put("identifier", identifier);
-        data.put("file", googleVisionRequest);
-
-        return data;
     }
 }
