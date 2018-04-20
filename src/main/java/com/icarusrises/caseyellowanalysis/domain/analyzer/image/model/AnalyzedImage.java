@@ -11,6 +11,7 @@ public class AnalyzedImage {
     private String message;
     private String path;
     private boolean analyzed;
+    private String md5;
 
     public AnalyzedImage() {
         this(-1);
@@ -35,6 +36,6 @@ public class AnalyzedImage {
     }
 
     public static AnalyzedImage AnalyzedImageFailure(String message) {
-        return new AnalyzedImage(-1, message, false);
+        return new AnalyzedImage(0, message, false);
     }
 }

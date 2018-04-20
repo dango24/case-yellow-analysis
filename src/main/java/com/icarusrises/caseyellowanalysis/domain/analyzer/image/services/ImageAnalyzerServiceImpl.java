@@ -3,6 +3,7 @@ package com.icarusrises.caseyellowanalysis.domain.analyzer.image.services;
 import com.icarusrises.caseyellowanalysis.commons.FileUtils;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.AnalyzedImage;
 import com.icarusrises.caseyellowanalysis.exceptions.AnalyzeException;
+import com.icarusrises.caseyellowanalysis.queues.model.ImageDetails;
 import com.icarusrises.caseyellowanalysis.queues.services.MessageProducerService;
 import com.icarusrises.caseyellowanalysis.queues.model.MessageType;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
@@ -40,25 +41,26 @@ public class ImageAnalyzerServiceImpl implements ImageAnalyzerService {
     }
 
     @Override
-    public void analyzeImage(String identifier, String imagePath) throws AnalyzeException {
+    public void analyzeImage(ImageDetails imageDetails) throws AnalyzeException {
         File imageFile = null;
 
         try {
-            imageFile = storageService.getFile(imagePath);
+            imageFile = storageService.getFile(imageDetails.getPath());
             GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(imageFile.getAbsolutePath());
-            Map<String, Object> data = createData(identifier, googleVisionRequest);
+            Map<String, Object> data = createData(imageDetails.getIdentifier(), googleVisionRequest);
             AnalyzedImage analyzedImage = analyzeImage(data);
 
             if (analyzedImage.isAnalyzed()) {
-                analyzedImage.setPath(imagePath);
+                analyzedImage.setPath(imageDetails.getPath());
+                analyzedImage.setMd5(imageDetails.getMd5());
                 messageProducerService.send(MessageType.SNAPSHOT_ANALYZED, analyzedImage);
 
             } else {
-                throw new AnalyzeException(String.format("Failed to analyze image: %s", imagePath));
+                throw new AnalyzeException(String.format("Failed to analyze image: %s", imageDetails.getPath()));
             }
 
         } catch (Exception e) {
-            String errorMessage = String.format("Failed to analyze image: %s, cause: %s", imagePath, e.getMessage());
+            String errorMessage = String.format("Failed to analyze image: %s, cause: %s", imageDetails.getPath(), e.getMessage());
             logger.error(errorMessage);
             throw new AnalyzeException(errorMessage, e);
 
@@ -74,9 +76,15 @@ public class ImageAnalyzerServiceImpl implements ImageAnalyzerService {
 
     @Override
     public AnalyzedImage analyzeImage(Map<String, Object> data) throws IOException {
-        SpeedTestParser speedTestParser = speedTestParserSupplier.getSpeedTestParser(String.valueOf(data.get("identifier")));
-        double result = speedTestParser.parseSpeedTest(data);
+        try {
+            SpeedTestParser speedTestParser = speedTestParserSupplier.getSpeedTestParser(String.valueOf(data.get("identifier")));
+            double result = speedTestParser.parseSpeedTest(data);
 
-        return new AnalyzedImage(result);
+            return new AnalyzedImage(result);
+
+        } catch (IllegalArgumentException e) {
+            logger.error(String.format("Failed to analyze image: %s", e.getMessage()), e);
+            return AnalyzedImage.AnalyzedImageFailure(e.getMessage());
+        }
     }
 }

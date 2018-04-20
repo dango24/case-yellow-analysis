@@ -1,7 +1,7 @@
 package com.icarusrises.caseyellowanalysis.queues.services;
 
 import com.amazonaws.services.s3.event.S3EventNotification;
-import com.icarusrises.caseyellowanalysis.queues.model.ImagePathDetails;
+import com.icarusrises.caseyellowanalysis.queues.model.ImageDetails;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.image.services.ImageAnalyzerService;
 import com.icarusrises.caseyellowanalysis.exceptions.AnalyzeException;
 import lombok.Getter;
@@ -59,18 +59,18 @@ public class ImageAnalysisConsumer {
         }
     }
 
-    private void analyzeImage(ImagePathDetails imagePathDetails) throws AnalyzeException {
+    private void analyzeImage(ImageDetails imagePathDetails) throws AnalyzeException {
         log.info(String.format("Start analyzing image for path: %s", imagePathDetails.getPath()));
 
         try {
-            imageAnalyzerService.analyzeImage(imagePathDetails.getIdentifier(), imagePathDetails.getPath());
+            imageAnalyzerService.analyzeImage(imagePathDetails);
 
         } finally {
             MDC.remove("correlation-id");
         }
     }
 
-    private boolean isImageQualifiedForAnalyze(ImagePathDetails imagePathDetails) {
+    private boolean isImageQualifiedForAnalyze(ImageDetails imagePathDetails) {
         return identifiers.contains(imagePathDetails.getIdentifier());
     }
 
@@ -86,15 +86,15 @@ public class ImageAnalysisConsumer {
                StringUtils.isNotEmpty(eventNotificationRecord.getS3().getObject().getKey());
     }
 
-    private void putMDC(ImagePathDetails imagePathDetails) {
+    private void putMDC(ImageDetails imagePathDetails) {
         MDC.put("correlation-id", imagePathDetails.getMd5());
     }
 
-    private ImagePathDetails buildImagePathDetails(String path) {
+    private ImageDetails buildImagePathDetails(String path) {
         String[] pathArgs = getPathArguments(path);
 
         if (pathArgs.length != 4) { // Total numbers of valid arguments
-            String errorMessage = String.format("Failed to generate ImagePathDetails, path args is not in length 4 for path: %s", path);
+            String errorMessage = String.format("Failed to generate ImageDetails, path args is not in length 4 for path: %s", path);
             log.error(errorMessage);
             throw new AnalyzeException(errorMessage);
         }
@@ -103,7 +103,7 @@ public class ImageAnalysisConsumer {
         String md5 = pathArgs[2];
         String identifier = getIdentifierFromPathArgs(pathArgs);
 
-        return new ImagePathDetails(path, user, identifier, md5);
+        return new ImageDetails(path, user, identifier, md5);
     }
 
     private String[] getPathArguments(String path) {
