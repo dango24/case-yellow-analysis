@@ -69,7 +69,7 @@ public class HotImageParser extends ImageTestParser {
             result = Double.valueOf(floatLocationsInText.get(0).getDescription()); // retrieve the closest word to hot identifier
 
             if (result <= 0) {
-                throw new IllegalArgumentException(String.format("Bezeq image parser result is less than 0, result: %s", result));
+                throw new IllegalArgumentException(String.format("Hot image parser result is less than 0, result: %s", result));
             }
 
             return result;

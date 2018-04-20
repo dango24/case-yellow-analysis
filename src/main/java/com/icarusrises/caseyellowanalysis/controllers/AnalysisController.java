@@ -59,26 +59,6 @@ public class AnalysisController {
         return textAnalyzerService.retrieveResultFromHtml(identifier, htmlParserRequest);
     }
 
-    @PostMapping("/analyze-image")
-    public AnalyzedImage analyzeImage(@RequestParam("identifier")String identifier, @RequestParam("md5")String md5, @RequestBody GoogleVisionRequest googleVisionRequest) {
-        try {
-            if (nonNull(md5)) {
-                MDC.put("correlation-id", md5);
-            }
-            log.info("Received analyzeImage POST request for identifier: " + identifier);
-
-            Map<String, Object> data = createData(identifier, googleVisionRequest);
-
-            return imageAnalyzerService.analyzeImage(data);
-
-        } catch (Exception e) {
-            log.error("Failed to analyze image, " + e.getMessage(), e);
-            return AnalyzedImage.AnalyzedImageFailure("Failed to analyze image, " + e.getMessage());
-        } finally {
-            MDC.remove("correlation-id");
-        }
-    }
-
     @PostMapping("/classify-image")
     public ImageClassificationResult classifyImage(@RequestParam("md5") String md5, @RequestParam("identifier")String identifier, @RequestBody VisionRequest visionRequest)  {
         try {
