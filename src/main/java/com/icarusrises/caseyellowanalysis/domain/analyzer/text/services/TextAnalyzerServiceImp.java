@@ -74,7 +74,7 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
             return buildDescriptionMatch(textIdentifiers, ocrResponse.getTextAnnotations());
 
         } catch (Exception e) {
-            throw new AnalyzeException(String.format("Failed to find description in image, %s", e.getMessage()), e);
+            throw new AnalyzeException(String.format("Failed to find description exist in image, %s", e.getMessage()), e);
         }
     }
 
