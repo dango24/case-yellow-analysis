@@ -77,7 +77,7 @@ public interface ImageUtils {
         int width = img.getWidth();
         int height = img.getHeight();
 
-        return String.format(IMAGE_RESOLUTION_SCHEMA, height, width);
+        return String.format(IMAGE_RESOLUTION_SCHEMA, width, height);
     }
 
     static byte[] createImageBase64Encode(String imgPath)  {
