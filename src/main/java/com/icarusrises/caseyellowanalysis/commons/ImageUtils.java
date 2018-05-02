@@ -5,6 +5,7 @@ import com.icarusrises.caseyellowanalysis.exceptions.AnalyzeException;
 import com.icarusrises.caseyellowanalysis.exceptions.IORuntimeException;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.Image;
+import com.icarusrises.caseyellowanalysis.services.googlevision.model.VisionRequest;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -25,6 +26,8 @@ import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
 public interface ImageUtils {
+
+    String IMAGE_RESOLUTION_SCHEMA = "%s_%s";
 
     Logger logger = Logger.getLogger(ImageUtils.class);
 
@@ -51,6 +54,30 @@ public interface ImageUtils {
         } catch (IOException e) {
             throw new IORuntimeException(e.getMessage(), e);
         }
+    }
+
+    static String getImageResolution(VisionRequest visionRequest) {
+        File imgFile = null;
+
+        try {
+            imgFile = convertBase64ToImage(visionRequest.getImage());
+            return getImageResolution(imgFile);
+
+        } catch (Exception e) {
+            logger.error(String.format("Failed to get image resolution: %s", e.getMessage()), e);
+        } finally {
+            com.icarusrises.caseyellowanalysis.commons.FileUtils.deleteFile(imgFile);
+        }
+
+        return null;
+    }
+
+    static String getImageResolution(File imgFile) throws IOException {
+        BufferedImage img = ImageIO.read(imgFile);
+        int width = img.getWidth();
+        int height = img.getHeight();
+
+        return String.format(IMAGE_RESOLUTION_SCHEMA, height, width);
     }
 
     static byte[] createImageBase64Encode(String imgPath)  {
