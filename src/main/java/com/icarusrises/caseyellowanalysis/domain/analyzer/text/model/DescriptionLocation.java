@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 public class DescriptionLocation {
 
-    private String description;
     private Point center;
+    private String description;
 
     public DescriptionLocation() {
         this("", new Point(0,0));

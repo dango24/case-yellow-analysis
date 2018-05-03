@@ -20,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static com.icarusrises.caseyellowanalysis.commons.ImageUtils.getImageResolution;
 import static com.icarusrises.caseyellowanalysis.commons.PointUtils.calcPointDistance;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -70,8 +71,9 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
         try {
             OcrResponse ocrResponse = ocrService.parseImage(visionRequest);
             Set<WordIdentifier> textIdentifiers = centralService.getTextIdentifiers(identifier, startTest);
+            String imageResolution = getImageResolution(visionRequest.getRequests().get(0));
 
-            return buildDescriptionMatch(textIdentifiers, ocrResponse.getTextAnnotations());
+            return buildDescriptionMatch(textIdentifiers, ocrResponse.getTextAnnotations(), imageResolution);
 
         } catch (Exception e) {
             throw new AnalyzeException(String.format("Failed to find description exist in image, %s", e.getMessage()), e);
@@ -143,7 +145,7 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
         return new HTMLParserResult(String.valueOf(KbpsResult));
     }
 
-    private DescriptionMatch buildDescriptionMatch(Set<WordIdentifier> textIdentifiers, List<WordData> words) {
+    private DescriptionMatch buildDescriptionMatch(Set<WordIdentifier> textIdentifiers, List<WordData> words, String imageResolution) {
         Map<WordData, Long> matchWordsInText;
         Map<String, List<Point>> wordDescription;
 
