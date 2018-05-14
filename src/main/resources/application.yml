@@ -25,6 +25,8 @@ case.yellow.dir: /home/ec2-user/case-yellow
 inception.dir: ${case.yellow.dir}/inception_for_speedtest
 inception.model: 11_classes_v4
 
+detect.object.model: ${case.yellow.dir}/ObjectDetection/detect_red_objects.py
+
 # Identifiers Meta Data
 hot_location: Mbps
 hot_identifier: Mbps

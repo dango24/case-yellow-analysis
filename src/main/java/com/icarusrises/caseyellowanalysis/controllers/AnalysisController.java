@@ -1,6 +1,5 @@
 package com.icarusrises.caseyellowanalysis.controllers;
 
-import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.AnalyzedImage;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.image.services.ImageAnalyzerService;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.DescriptionMatch;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.HTMLParserRequest;
@@ -20,9 +19,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Map;
 
-import static com.icarusrises.caseyellowanalysis.commons.ImageUtils.createData;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -32,14 +29,12 @@ import static java.util.Objects.nonNull;
 public class AnalysisController {
 
     private OcrService ocrService;
-    private ImageAnalyzerService imageAnalyzerService;
     private ImageClassifierService imageClassifierService;
     private TextAnalyzerService textAnalyzerService;
 
     @Autowired
-    public AnalysisController(TextAnalyzerService textAnalyzerService, ImageAnalyzerService imageAnalyzerService, ImageClassifierService imageClassifierService, OcrService ocrService) {
+    public AnalysisController(TextAnalyzerService textAnalyzerService, ImageClassifierService imageClassifierService, OcrService ocrService) {
         this.ocrService = ocrService;
-        this.imageAnalyzerService = imageAnalyzerService;
         this.textAnalyzerService = textAnalyzerService;
         this.imageClassifierService = imageClassifierService;
     }
