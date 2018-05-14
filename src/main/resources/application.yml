@@ -51,6 +51,10 @@ sqs.queue.endpoint: https://sqs.eu-central-1.amazonaws.com
 sqs.analyze_snapshot.queue: cy-analyze-snapshot-queue
 sqs.central.queue: cy-central-queue
 
+#DynamoDB
+dynamo.endpoint: https://dynamodb.eu-central-1.amazonaws.com
+dynamo.region: eu-central-1
+
 
 credentials_path: /home/ec2-user/case-yellow/resources/a.out
 #credentials_path: /home/dango/Documents/case-yellow/a.out
