@@ -10,12 +10,15 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@DynamoDBTable(tableName = "User-image-resolution")
+@DynamoDBTable(tableName = "image-resolution-info")
 public class ImageResolutionInfo {
 
     @DynamoDBHashKey
-    private String User;
+    private String user;
 
     @DynamoDBAttribute
     private String identifier;
+
+    @DynamoDBAttribute
+    private int count;
 }
