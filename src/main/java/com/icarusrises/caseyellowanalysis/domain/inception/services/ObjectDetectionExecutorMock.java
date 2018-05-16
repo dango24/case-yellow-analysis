@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 @Service
-@Primary
+//@Primary
 public class ObjectDetectionExecutorMock implements ObjectDetectionExecutor {
 
     private static final String OBJECT_DETECTION_MOCK_LOCATION = "/mock_object_detection";
