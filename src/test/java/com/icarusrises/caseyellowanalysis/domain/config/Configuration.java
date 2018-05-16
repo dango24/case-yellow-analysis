@@ -3,6 +3,7 @@ package com.icarusrises.caseyellowanalysis.domain.config;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.icarusrises.caseyellowanalysis.configuration.ConfigurationManager;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.Point;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.DescriptionMatch;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.services.UserImageResolutionInfoService;
 import com.icarusrises.caseyellowanalysis.queues.model.MessageType;
 import com.icarusrises.caseyellowanalysis.queues.services.MessageProducerService;
@@ -56,7 +57,7 @@ public class Configuration {
     public MessageProducerService messageProducerService() {
         return new MessageProducerService() {
             @Override
-            public <T> void send(MessageType type, T payload) throws JMSException, JsonProcessingException {
+            public <T> void send(MessageType type, T payload) throws JMSException {
 
             }
         };
@@ -73,8 +74,8 @@ public class Configuration {
     public UserImageResolutionInfoService userImageResolutionInfoService() {
         return new UserImageResolutionInfoService() {
             @Override
-            public void foo(String user, String identifier, Point descriptionMatchPoint, VisionRequest visionRequest) {
-                return;
+            public DescriptionMatch getDescriptionMatchFromCache(String user, String identifier, Point descriptionMatchPoint, VisionRequest visionRequest) {
+                return null;
             }
         };
     }
