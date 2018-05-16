@@ -7,6 +7,6 @@ import com.icarusrises.caseyellowanalysis.exceptions.AnalyzeException;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
 
 public interface TextAnalyzerService {
-    DescriptionMatch isDescriptionExist(String identifier, boolean startTest, GoogleVisionRequest visionRequest) throws AnalyzeException;
+    DescriptionMatch isDescriptionExist(String user, String identifier, boolean startTest, GoogleVisionRequest visionRequest) throws AnalyzeException;
     HTMLParserResult retrieveResultFromHtml(String identifier, HTMLParserRequest htmlParserRequest) throws AnalyzeException;
 }

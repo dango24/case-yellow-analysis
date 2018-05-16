@@ -4,7 +4,6 @@ import com.icarusrises.caseyellowanalysis.commons.PointUtils;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.Point;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.WordData;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.*;
-import com.icarusrises.caseyellowanalysis.domain.inception.services.ObjectDetectionService;
 import com.icarusrises.caseyellowanalysis.exceptions.AnalyzeException;
 import com.icarusrises.caseyellowanalysis.services.central.CentralService;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
@@ -32,13 +31,13 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
 
     private OcrService ocrService;
     private CentralService centralService;
-    private ObjectDetectionService objectDetectionService;
+    private UserImageResolutionInfoService userImageResolutionInfoService;
 
     @Autowired
-    public TextAnalyzerServiceImp(CentralService centralService, OcrService ocrService, ObjectDetectionService objectDetectionService) {
+    public TextAnalyzerServiceImp(CentralService centralService, OcrService ocrService, UserImageResolutionInfoService userImageResolutionInfoService) {
         this.ocrService = ocrService;
         this.centralService = centralService;
-        this.objectDetectionService = objectDetectionService;
+        this.userImageResolutionInfoService = userImageResolutionInfoService;
     }
 
     @Override
@@ -69,27 +68,17 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
     }
 
     @Override
-    public DescriptionMatch isDescriptionExist(String identifier, boolean startTest, GoogleVisionRequest visionRequest) throws AnalyzeException {
+    public DescriptionMatch isDescriptionExist(String user, String identifier, boolean startTest, GoogleVisionRequest visionRequest) throws AnalyzeException {
         try {
             OcrResponse ocrResponse = ocrService.parseImage(visionRequest);
             Set<WordIdentifier> textIdentifiers = centralService.getTextIdentifiers(identifier, startTest);
             DescriptionMatch descriptionMatch = buildDescriptionMatch(textIdentifiers, ocrResponse.getTextAnnotations());
 
             /////////////////////////////////////////////////////////
-            Point p1 = null;
-            Point p2 = null;
-
-            DescriptionMatch descriptionMatch2 = objectDetectionService.detectedObject(identifier, visionRequest.getRequests().get(0));
 
             if (descriptionMatch.isMatchedDescription()) {
-                p1 = descriptionMatch.getDescriptionLocation().getCenter();
+                userImageResolutionInfoService.foo(user, identifier, descriptionMatch.getDescriptionLocation().getCenter(), visionRequest.getRequests().get(0));
             }
-
-            if (descriptionMatch2.isMatchedDescription()) {
-                p2 = descriptionMatch2.getDescriptionLocation().getCenter();
-            }
-
-            log.info(String.format("Dan ! Dan ! descriptionMatch origin: %s, descriptionMatch new: %s", p1, p2));
 
             /////////////////////////////////////////////////////////
 

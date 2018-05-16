@@ -2,8 +2,11 @@ package com.icarusrises.caseyellowanalysis.domain.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.icarusrises.caseyellowanalysis.configuration.ConfigurationManager;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.Point;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.text.services.UserImageResolutionInfoService;
 import com.icarusrises.caseyellowanalysis.queues.model.MessageType;
 import com.icarusrises.caseyellowanalysis.queues.services.MessageProducerService;
+import com.icarusrises.caseyellowanalysis.services.googlevision.model.VisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.services.GoogleVisionService;
 import com.icarusrises.caseyellowanalysis.services.googlevision.services.OcrService;
 import com.icarusrises.caseyellowanalysis.services.storage.StorageService;
@@ -63,5 +66,16 @@ public class Configuration {
     @Profile("dev")
     public OcrService ocrService() {
         return new GoogleVisionService(configurationManager());
+    }
+
+    @Bean
+    @Profile("dev")
+    public UserImageResolutionInfoService userImageResolutionInfoService() {
+        return new UserImageResolutionInfoService() {
+            @Override
+            public void foo(String user, String identifier, Point descriptionMatchPoint, VisionRequest visionRequest) {
+                return;
+            }
+        };
     }
 }

@@ -40,12 +40,13 @@ public class AnalysisController {
     }
 
     @PostMapping("/is-description-exist")
-    public DescriptionMatch isDescriptionExist(@RequestParam("identifier")String identifier,
+    public DescriptionMatch isDescriptionExist(@RequestParam("user")String user,
+                                               @RequestParam("identifier")String identifier,
                                                @RequestParam("startTest")boolean startTest,
                                                @RequestBody GoogleVisionRequest visionRequest) throws AnalyzeException {
 
         log.info("Received isDescriptionExist POST request for identifier: " + identifier);
-        return textAnalyzerService.isDescriptionExist(identifier, startTest, visionRequest);
+        return textAnalyzerService.isDescriptionExist(user, identifier, startTest, visionRequest);
     }
 
     @PostMapping("/parse-html")
