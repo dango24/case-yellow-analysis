@@ -33,8 +33,8 @@ public class UserImageResolutionInfoServiceImpl implements UserImageResolutionIn
     @Override
     public void foo(String user, String identifier, Point descriptionMatchPoint, VisionRequest visionRequest) {
         Point objectDetectionPoint = null;
+        UserImageResolutionInfo userImageResolutionInfo = null;
         String imageResolution = ImageUtils.getImageResolution(visionRequest);
-        UserImageResolutionInfo userImageResolutionInfo = userImageResolutionInfoRepository.findByUser(user);
         DescriptionMatch descriptionMatch = objectDetectionService.detectedObject(identifier, visionRequest);
 
         if (descriptionMatch.isMatchedDescription()) {
@@ -43,6 +43,8 @@ public class UserImageResolutionInfoServiceImpl implements UserImageResolutionIn
 
         ImageResolutionCoordinate newImageResolutionCoordinate =
             new ImageResolutionCoordinate(imageResolution, descriptionMatchPoint, objectDetectionPoint);
+
+        userImageResolutionInfo = userImageResolutionInfoRepository.findByUser(user);
 
         if (isNull(userImageResolutionInfo)) {
             userImageResolutionInfo = new UserImageResolutionInfo(user);
@@ -55,7 +57,7 @@ public class UserImageResolutionInfoServiceImpl implements UserImageResolutionIn
         }
 
         if (imageResolutionInfo.isImageResolutionCoordinateExist(imageResolution)) {
-
+            checkDiffPointsCoordinates(imageResolutionInfo.getImageResolutionCoordinate(imageResolution), newImageResolutionCoordinate);
         } else {
             imageResolutionInfo.addImageResolutionCoordinate(newImageResolutionCoordinate);
         }
@@ -65,5 +67,10 @@ public class UserImageResolutionInfoServiceImpl implements UserImageResolutionIn
 
 
         log.info(String.format("DescriptionMatch origin: %s, descriptionMatch new: %s", descriptionMatchPoint, objectDetectionPoint));
+    }
+
+    private void checkDiffPointsCoordinates(ImageResolutionCoordinate originResolutionCoordinate,
+                                            ImageResolutionCoordinate newImageResolutionCoordinate) {
+
     }
 }
