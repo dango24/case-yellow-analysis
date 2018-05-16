@@ -23,7 +23,8 @@ public class ImageResolutionInfo {
     }
 
     public boolean isImageResolutionCoordinateExist(String resolution) {
-        return imageResolutionInfo.contains(resolution);
+        return imageResolutionInfo.stream()
+                                  .anyMatch(imageResolutionCoordinate -> imageResolutionCoordinate.getResolution().equals(resolution));
     }
 
     public ImageResolutionCoordinate getImageResolutionCoordinate(String resolution) {
@@ -35,5 +36,13 @@ public class ImageResolutionInfo {
 
     public void addImageResolutionCoordinate(ImageResolutionCoordinate imageResolutionCoordinate) {
         imageResolutionInfo.add(imageResolutionCoordinate);
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "identifier='" + identifier + '\'' +
+                ", imageResolutionInfo=" + imageResolutionInfo +
+                '}';
     }
 }

@@ -1,12 +1,14 @@
 package com.icarusrises.caseyellowanalysis.domain.inception.services;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
+//@Primary
 @Service
 public class ImageInceptionExecutorMockImpl implements ImageInceptionExecutor {
 

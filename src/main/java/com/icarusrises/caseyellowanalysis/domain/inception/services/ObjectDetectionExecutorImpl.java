@@ -4,6 +4,7 @@ import com.icarusrises.caseyellowanalysis.exceptions.AnalyzeException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.io.InputStream;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Slf4j
+@Primary
 @Service
 public class ObjectDetectionExecutorImpl implements ObjectDetectionExecutor {
 

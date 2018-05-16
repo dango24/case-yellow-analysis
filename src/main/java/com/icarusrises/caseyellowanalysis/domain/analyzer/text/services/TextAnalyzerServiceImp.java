@@ -74,13 +74,9 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
             Set<WordIdentifier> textIdentifiers = centralService.getTextIdentifiers(identifier, startTest);
             DescriptionMatch descriptionMatch = buildDescriptionMatch(textIdentifiers, ocrResponse.getTextAnnotations());
 
-            /////////////////////////////////////////////////////////
-
             if (descriptionMatch.isMatchedDescription()) {
-                userImageResolutionInfoService.foo(user, identifier, descriptionMatch.getDescriptionLocation().getCenter(), visionRequest.getRequests().get(0));
+                userImageResolutionInfoService.getDescriptionMatchFromCache(user, identifier, descriptionMatch.getDescriptionLocation().getCenter(), visionRequest.getRequests().get(0));
             }
-
-            /////////////////////////////////////////////////////////
 
             return descriptionMatch;
 

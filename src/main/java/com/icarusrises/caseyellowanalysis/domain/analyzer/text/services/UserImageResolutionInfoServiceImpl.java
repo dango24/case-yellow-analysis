@@ -8,6 +8,8 @@ import com.icarusrises.caseyellowanalysis.persistence.model.ImageResolutionCoord
 import com.icarusrises.caseyellowanalysis.persistence.model.ImageResolutionInfo;
 import com.icarusrises.caseyellowanalysis.persistence.model.UserImageResolutionInfo;
 import com.icarusrises.caseyellowanalysis.persistence.repositories.UserImageResolutionInfoRepository;
+import com.icarusrises.caseyellowanalysis.queues.model.MessageType;
+import com.icarusrises.caseyellowanalysis.queues.services.MessageProducerService;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.VisionRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,18 +24,25 @@ import static java.util.Objects.isNull;
 public class UserImageResolutionInfoServiceImpl implements UserImageResolutionInfoService {
 
     private ObjectDetectionService objectDetectionService;
+    private MessageProducerService messageProducerService;
     private UserImageResolutionInfoRepository userImageResolutionInfoRepository;
 
     @Autowired
-    public UserImageResolutionInfoServiceImpl(ObjectDetectionService objectDetectionService, UserImageResolutionInfoRepository userImageResolutionInfoRepository) {
+    public UserImageResolutionInfoServiceImpl(ObjectDetectionService objectDetectionService,
+                                              UserImageResolutionInfoRepository userImageResolutionInfoRepository,
+                                              MessageProducerService messageProducerService) {
+
         this.objectDetectionService = objectDetectionService;
+        this.messageProducerService = messageProducerService;
         this.userImageResolutionInfoRepository = userImageResolutionInfoRepository;
     }
 
     @Override
-    public void foo(String user, String identifier, Point descriptionMatchPoint, VisionRequest visionRequest) {
+    public DescriptionMatch getDescriptionMatchFromCache(String user, String identifier, Point descriptionMatchPoint, VisionRequest visionRequest) {
         Point objectDetectionPoint = null;
+        ImageResolutionInfo imageResolutionInfo = null;
         UserImageResolutionInfo userImageResolutionInfo = null;
+        ImageResolutionCoordinate newImageResolutionCoordinate = null;
         String imageResolution = ImageUtils.getImageResolution(visionRequest);
         DescriptionMatch descriptionMatch = objectDetectionService.detectedObject(identifier, visionRequest);
 
@@ -41,36 +50,54 @@ public class UserImageResolutionInfoServiceImpl implements UserImageResolutionIn
             objectDetectionPoint = descriptionMatch.getDescriptionLocation().getCenter();
         }
 
-        ImageResolutionCoordinate newImageResolutionCoordinate =
-            new ImageResolutionCoordinate(imageResolution, descriptionMatchPoint, objectDetectionPoint);
-
+        newImageResolutionCoordinate = new ImageResolutionCoordinate(imageResolution, descriptionMatchPoint, objectDetectionPoint);
         userImageResolutionInfo = userImageResolutionInfoRepository.findByUser(user);
 
         if (isNull(userImageResolutionInfo)) {
             userImageResolutionInfo = new UserImageResolutionInfo(user);
+            log.info(String.format("Add new UserImageResolutionInfo for user: %s", user));
         }
 
-        ImageResolutionInfo imageResolutionInfo = userImageResolutionInfo.getImageResolutionInfo(identifier);
+        imageResolutionInfo = userImageResolutionInfo.getImageResolutionInfo(identifier);
 
         if (isNull(imageResolutionInfo)) {
             imageResolutionInfo = new ImageResolutionInfo(identifier);
         }
 
         if (imageResolutionInfo.isImageResolutionCoordinateExist(imageResolution)) {
-            checkDiffPointsCoordinates(imageResolutionInfo.getImageResolutionCoordinate(imageResolution), newImageResolutionCoordinate);
-        } else {
-            imageResolutionInfo.addImageResolutionCoordinate(newImageResolutionCoordinate);
+            checkDiffPointsCoordinates(user, imageResolution, imageResolutionInfo.getImageResolutionCoordinate(imageResolution), newImageResolutionCoordinate);
         }
 
+        imageResolutionInfo.addImageResolutionCoordinate(newImageResolutionCoordinate);
         userImageResolutionInfo.putImageResolutionInfo(identifier, imageResolutionInfo);
         userImageResolutionInfoRepository.save(userImageResolutionInfo);
+        log.info(String.format("Retrieve description match from cache for user: %s, with info: %s", user, userImageResolutionInfo));
 
-
-        log.info(String.format("DescriptionMatch origin: %s, descriptionMatch new: %s", descriptionMatchPoint, objectDetectionPoint));
+        return new DescriptionMatch(String.format("%s start button", identifier), descriptionMatchPoint);
     }
 
-    private void checkDiffPointsCoordinates(ImageResolutionCoordinate originResolutionCoordinate,
+    private void checkDiffPointsCoordinates(String user, String resolution,
+                                            ImageResolutionCoordinate originResolutionCoordinate,
                                             ImageResolutionCoordinate newImageResolutionCoordinate) {
 
+        try {
+            String message;
+            log.info(String.format("ImageResolutionCoordinate origin: %s, new: %s", originResolutionCoordinate, newImageResolutionCoordinate));
+
+            if (!originResolutionCoordinate.getPoint().equals(newImageResolutionCoordinate.getPoint())) {
+                message = String.format("Found google vision image resolution coordinate miss match origin: %s, new: %s", originResolutionCoordinate.getPoint(), newImageResolutionCoordinate.getPoint());
+                log.error(message);
+                messageProducerService.send(MessageType.IMAGE_COORDINATE_MISS_MATCH, message);
+            }
+
+            if (!originResolutionCoordinate.getObjectDetectionPoint().equals(newImageResolutionCoordinate.getObjectDetectionPoint())) {
+                message = String.format("Found Object detection resolution coordinate miss match origin: %s, new: %s", originResolutionCoordinate.getObjectDetectionPoint(), newImageResolutionCoordinate.getObjectDetectionPoint());
+                log.error(message);
+                messageProducerService.send(MessageType.IMAGE_COORDINATE_MISS_MATCH, message);
+            }
+
+        } catch (Exception e) {
+            log.error(String.format("Failure accrue while checking Diff between points coordinates, %s", e.getMessage()), e);
+        }
     }
 }

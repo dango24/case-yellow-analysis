@@ -34,4 +34,12 @@ public class UserImageResolutionInfo {
     public void putImageResolutionInfo(String identifier, ImageResolutionInfo info) {
         imageResolutionInfo.put(identifier, info);
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "user='" + user + '\'' +
+                ", imageResolutionInfo=" + imageResolutionInfo +
+                '}';
+    }
 }

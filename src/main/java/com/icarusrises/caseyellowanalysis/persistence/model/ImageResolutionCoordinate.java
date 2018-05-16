@@ -33,4 +33,13 @@ public class ImageResolutionCoordinate {
         result = 31 * result + (resolution != null ? resolution.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "resolution='" + resolution + '\'' +
+                ", point=" + point +
+                ", objectDetectionPoint=" + objectDetectionPoint +
+                '}';
+    }
 }
