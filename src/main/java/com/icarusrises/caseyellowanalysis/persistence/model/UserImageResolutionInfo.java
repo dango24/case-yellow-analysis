@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Data
@@ -20,4 +21,17 @@ public class UserImageResolutionInfo {
 
     @DynamoDBAttribute
     private Map<String, ImageResolutionInfo> imageResolutionInfo;
+
+    public UserImageResolutionInfo(String user) {
+        this.user = user;
+        this.imageResolutionInfo = new HashMap<>();
+    }
+
+    public ImageResolutionInfo getImageResolutionInfo(String identifier) {
+        return imageResolutionInfo.get(identifier);
+    }
+
+    public void putImageResolutionInfo(String identifier, ImageResolutionInfo info) {
+        imageResolutionInfo.put(identifier, info);
+    }
 }

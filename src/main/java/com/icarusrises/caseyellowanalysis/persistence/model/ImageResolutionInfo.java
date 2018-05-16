@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -15,4 +16,24 @@ public class ImageResolutionInfo {
 
     private String identifier;
     List<ImageResolutionCoordinate> imageResolutionInfo;
+
+    public ImageResolutionInfo(String identifier) {
+        this.identifier = identifier;
+        this.imageResolutionInfo = new ArrayList<>();
+    }
+
+    public boolean isImageResolutionCoordinateExist(String resolution) {
+        return imageResolutionInfo.contains(resolution);
+    }
+
+    public ImageResolutionCoordinate getImageResolutionCoordinate(String resolution) {
+        return imageResolutionInfo.stream()
+                                  .filter(info -> info.getResolution().equals(resolution))
+                                  .findFirst()
+                                  .orElseGet(null);
+    }
+
+    public void addImageResolutionCoordinate(ImageResolutionCoordinate imageResolutionCoordinate) {
+        imageResolutionInfo.add(imageResolutionCoordinate);
+    }
 }
