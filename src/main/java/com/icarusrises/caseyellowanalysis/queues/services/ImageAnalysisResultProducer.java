@@ -1,7 +1,8 @@
 package com.icarusrises.caseyellowanalysis.queues.services;
 
 import com.amazon.sqs.javamessaging.SQSMessagingClientConstants;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icarusrises.caseyellowanalysis.queues.model.MessageType;
 import com.icarusrises.caseyellowanalysis.queues.model.QueueMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -27,24 +28,29 @@ public class ImageAnalysisResultProducer implements MessageProducerService {
     private String queueName;
 
     private JmsTemplate jmsTemplate;
-    private Gson converter;
+    private ObjectMapper converter;
 
     @Autowired
     public ImageAnalysisResultProducer(JmsTemplate jmsTemplate) {
         this.jmsTemplate = jmsTemplate;
-        this.converter = new Gson();
+        this.converter = new ObjectMapper();
     }
 
     @Override
     @Retryable(value =  JmsException.class , maxAttempts = 10, backoff = @Backoff(delay = 5000))
-    public <T extends Object> void send(MessageType type, T payload) {
-        QueueMessage message = new QueueMessage(type, converter.toJson(payload));
-        jmsTemplate.send(queueName, (session) -> createMessage(session, message));
+    public <T extends Object> void send(MessageType type, T payload)  {
+        try {
+            QueueMessage message = new QueueMessage(type, converter.writeValueAsString(payload));
+            jmsTemplate.send(queueName, (session) -> createMessage(session, message));
+
+        } catch (JsonProcessingException e) {
+            log.error(String.format("Failed to convert %s to json, cause: %s", payload, e.getMessage()), e);
+        }
     }
 
     private Message createMessage(Session session, QueueMessage message) throws JMSException {
         try {
-            Message createMessage = session.createTextMessage(converter.toJson(message));
+            Message createMessage = session.createTextMessage(converter.writeValueAsString(message));
             createMessage.setStringProperty(SQSMessagingClientConstants.JMSX_GROUP_ID, "messageGroup1");
             createMessage.setStringProperty(SQSMessagingClientConstants.JMS_SQS_DEDUPLICATION_ID, "1" + System.currentTimeMillis());
             createMessage.setStringProperty("documentType", message.getClass().getName());

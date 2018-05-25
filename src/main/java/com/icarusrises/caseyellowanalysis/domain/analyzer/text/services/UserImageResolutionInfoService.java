@@ -5,5 +5,8 @@ import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.Description
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.VisionRequest;
 
 public interface UserImageResolutionInfoService {
-    DescriptionMatch getDescriptionMatchFromCache(String user, String identifier, Point descriptionMatchPoint, VisionRequest visionRequest);
+    boolean isImageResolutionCoordinateExist(String user, String identifier, VisionRequest visionRequest);
+    DescriptionMatch getImageResolutionCoordinate(String user, String identifier, VisionRequest visionRequest);
+    void addImageCenterPointToCache(String user, String identifier, Point imageCenterPoint, VisionRequest visionRequest);
+    void removeImageCenterPointFromCache(String user, String identifier, Point imageCenterPoint, VisionRequest visionRequest);
 }

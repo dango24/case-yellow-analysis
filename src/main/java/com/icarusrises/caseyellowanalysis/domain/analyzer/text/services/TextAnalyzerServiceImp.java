@@ -8,12 +8,14 @@ import com.icarusrises.caseyellowanalysis.exceptions.AnalyzeException;
 import com.icarusrises.caseyellowanalysis.services.central.CentralService;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;
+import com.icarusrises.caseyellowanalysis.services.googlevision.model.VisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.services.OcrService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -47,6 +49,32 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
         return retrieveResultFromHtml(speedTestNonFlashMetaData, htmlParserRequest.getPayload(), 1);
     }
 
+    @Override
+    public void startButtonSuccessfullyFound(String user, String identifier, Point imageCenterPoint, VisionRequest visionRequest) {
+        userImageResolutionInfoService.addImageCenterPointToCache(user, identifier, imageCenterPoint, visionRequest);
+    }
+
+    @Override
+    public void startButtonFailed(String user, String identifier, Point imageCenterPoint, VisionRequest visionRequest) {
+        userImageResolutionInfoService.removeImageCenterPointFromCache(user, identifier, imageCenterPoint, visionRequest);
+    }
+
+    @Override
+    public DescriptionMatch isDescriptionExist(String user, String identifier, boolean startTest, GoogleVisionRequest googleVisionRequest) throws AnalyzeException {
+        try {
+            VisionRequest visionRequest = googleVisionRequest.getRequests().get(0);
+
+            if (userImageResolutionInfoService.isImageResolutionCoordinateExist(user, identifier, visionRequest)) {
+                return userImageResolutionInfoService.getImageResolutionCoordinate(user, identifier, visionRequest);
+            }
+
+           return fetchImageResolutionCoordinate(identifier, startTest, googleVisionRequest);
+
+        } catch (Exception e) {
+            throw new AnalyzeException(String.format("Failed to find description exist in image, %s", e.getMessage()), e);
+        }
+    }
+
     private HTMLParserResult retrieveResultFromHtml(SpeedTestNonFlashMetaData speedTestNonFlashMetaData, String htmlPayload, int groupNumber) throws AnalyzeException {
 
         List<String> MbpsRegex = speedTestNonFlashMetaData.getFinishIdentifierMbps();
@@ -67,21 +95,15 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
         return HTMLParserResult.failure();
     }
 
-    @Override
-    public DescriptionMatch isDescriptionExist(String user, String identifier, boolean startTest, GoogleVisionRequest visionRequest) throws AnalyzeException {
+    private DescriptionMatch fetchImageResolutionCoordinate(String identifier, boolean startTest, GoogleVisionRequest visionRequest) throws IOException {
         try {
             OcrResponse ocrResponse = ocrService.parseImage(visionRequest);
             Set<WordIdentifier> textIdentifiers = centralService.getTextIdentifiers(identifier, startTest);
-            DescriptionMatch descriptionMatch = buildDescriptionMatch(textIdentifiers, ocrResponse.getTextAnnotations());
-
-            if (descriptionMatch.isMatchedDescription()) {
-                userImageResolutionInfoService.getDescriptionMatchFromCache(user, identifier, descriptionMatch.getDescriptionLocation().getCenter(), visionRequest.getRequests().get(0));
-            }
-
-            return descriptionMatch;
+            return buildDescriptionMatch(textIdentifiers, ocrResponse.getTextAnnotations());
 
         } catch (Exception e) {
-            throw new AnalyzeException(String.format("Failed to find description exist in image, %s", e.getMessage()), e);
+            log.error(String.format("Failed to fetch image resolution coordinate, cause: %s", e.getMessage()), e);
+            return DescriptionMatch.notFound();
         }
     }
 

@@ -74,7 +74,22 @@ public class Configuration {
     public UserImageResolutionInfoService userImageResolutionInfoService() {
         return new UserImageResolutionInfoService() {
             @Override
-            public DescriptionMatch getDescriptionMatchFromCache(String user, String identifier, Point descriptionMatchPoint, VisionRequest visionRequest) {
+            public void addImageCenterPointToCache(String user, String identifier, Point descriptionMatchPoint, VisionRequest visionRequest) {
+
+            }
+
+            @Override
+            public void removeImageCenterPointFromCache(String user, String identifier, Point imageCenterPoint, VisionRequest visionRequest) {
+
+            }
+
+            @Override
+            public boolean isImageResolutionCoordinateExist(String user, String identifier, VisionRequest visionRequest) {
+                return false;
+            }
+
+            @Override
+            public DescriptionMatch getImageResolutionCoordinate(String user, String identifier, VisionRequest visionRequest) {
                 return null;
             }
         };

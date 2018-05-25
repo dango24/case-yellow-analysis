@@ -1,6 +1,6 @@
 package com.icarusrises.caseyellowanalysis.controllers;
 
-import com.icarusrises.caseyellowanalysis.domain.analyzer.image.services.ImageAnalyzerService;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.Point;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.DescriptionMatch;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.HTMLParserRequest;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.HTMLParserResult;
@@ -74,5 +74,26 @@ public class AnalysisController {
     public OcrResponse ocrRequest(@RequestBody GoogleVisionRequest googleVisionRequest) throws IOException {
         log.info("Received ocrRequest POST request");
         return ocrService.parseImage(googleVisionRequest);
+    }
+
+    @PostMapping("/start-button-successfully-found")
+    public void startButtonSuccessfullyFound(@RequestParam("user")String user,
+                                             @RequestParam("identifier")String identifier,
+                                             @RequestParam("x")int x,
+                                             @RequestParam("y")int y, @RequestBody VisionRequest visionRequest) {
+
+        log.info("Received startButtonSuccessfullyFound POST request for identifier: " + identifier);
+        textAnalyzerService.startButtonSuccessfullyFound(user, identifier, new Point(x, y), visionRequest);
+    }
+
+
+    @PostMapping("/start-button-failed")
+    public void startButtonFailed(@RequestParam("user")String user,
+                                  @RequestParam("identifier")String identifier,
+                                  @RequestParam("x")int x,
+                                  @RequestParam("y")int y, @RequestBody VisionRequest visionRequest) {
+
+        log.info("Received startButtonFailed POST request for identifier: " + identifier);
+        textAnalyzerService.startButtonFailed(user, identifier, new Point(x, y), visionRequest);
     }
 }

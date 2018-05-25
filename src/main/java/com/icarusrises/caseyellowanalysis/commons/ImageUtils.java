@@ -64,12 +64,13 @@ public interface ImageUtils {
             return getImageResolution(imgFile);
 
         } catch (Exception e) {
-            logger.error(String.format("Failed to get image resolution: %s", e.getMessage()), e);
+            String errorMessage = String.format("Failed to get image resolution: %s", e.getMessage());
+            logger.error(errorMessage, e);
+            throw new AnalyzeException(errorMessage);
+
         } finally {
             com.icarusrises.caseyellowanalysis.commons.FileUtils.deleteFile(imgFile);
         }
-
-        return null;
     }
 
     static String getImageResolution(File imgFile) throws IOException {
