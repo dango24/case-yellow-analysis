@@ -15,7 +15,7 @@ import java.util.List;
 public class ImageResolutionInfo {
 
     private String identifier;
-    List<ImageResolutionCoordinate> imageResolutionInfo;
+    private List<ImageResolutionCoordinate> imageResolutionInfo;
 
     public ImageResolutionInfo(String identifier) {
         this.identifier = identifier;
