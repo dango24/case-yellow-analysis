@@ -29,8 +29,9 @@ public class GoogleVisionService implements OcrService {
     private GoogleVisionRetrofitRequests googleVisionRetrofitRequests;
 
     @Autowired
-    public GoogleVisionService(ConfigurationManager configurationManager) {
+    public GoogleVisionService(ConfigurationManager configurationManager, RequestHandler requestHandler) {
         this.configurationManager = configurationManager;
+        this.requestHandler = requestHandler;
     }
 
     @PostConstruct
@@ -53,10 +54,5 @@ public class GoogleVisionService implements OcrService {
         String wordsData = "{ \"textAnnotations\" : " + textAnnotations.toString() + "}";
 
         return new ObjectMapper().readValue(wordsData, OcrResponse.class);
-    }
-
-    @Autowired
-    public void setRequestHandler(RequestHandler requestHandler) {
-        this.requestHandler = requestHandler;
     }
 }

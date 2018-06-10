@@ -103,6 +103,10 @@ public class UserImageResolutionInfoServiceImpl implements UserImageResolutionIn
         ImageResolutionInfo imageResolutionInfo = userImageResolutionInfo.getImageResolutionInfo(identifier);
         ImageResolutionCoordinate imageResolutionCoordinate = imageResolutionInfo.getImageResolutionCoordinate(resolution);
 
+        if (isNull(imageResolutionCoordinate)) {
+            return DescriptionMatch.notFound();
+        }
+        
         return new DescriptionMatch(String.format("%s start button", identifier), imageResolutionCoordinate.getPoint());
     }
 

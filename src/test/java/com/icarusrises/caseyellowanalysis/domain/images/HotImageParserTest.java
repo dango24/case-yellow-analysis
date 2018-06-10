@@ -32,7 +32,8 @@ public class HotImageParserTest {
     private static final String HOT_IMG_LOCATION_4 = "/images/hot_4_screenshot.PNG";
     private static final String HOT_IMG_LOCATION_5 = "/images/hot_5_screenshot.PNG";
     private static final String HOT_IMG_LOCATION_6 = "/images/hot_6_screenshot.PNG";
-    private static final String HOT_IMG_LOCATION_7 = "/images/hot_start_button_1_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_7 = "/images/hot_7_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_7__ = "/images/hot_start_button_1_screenshot.PNG";
     private static final String HIGH_RESOLUTION = "/images/admin-C4FA059FB3DC9972ADAC0810B2E7DD7B-hot.png";
 
     private HotImageParser hotImageParser;
@@ -133,6 +134,15 @@ public class HotImageParserTest {
     public void parseSpeedTest7() throws Exception {
         Map<String, Object> map = new HashMap<>();
         GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_7).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(101.21), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest77() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_7__).getAbsolutePath());
         map.put("file", googleVisionRequest);
 
         assertEquals(String.valueOf(38.92), String.valueOf(hotImageParser.parseSpeedTest(map)));

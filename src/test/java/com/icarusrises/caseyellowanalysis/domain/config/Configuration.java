@@ -1,6 +1,5 @@
 package com.icarusrises.caseyellowanalysis.domain.config;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.icarusrises.caseyellowanalysis.configuration.ConfigurationManager;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.Point;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.text.model.DescriptionMatch;
@@ -10,6 +9,7 @@ import com.icarusrises.caseyellowanalysis.queues.services.MessageProducerService
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.VisionRequest;
 import com.icarusrises.caseyellowanalysis.services.googlevision.services.GoogleVisionService;
 import com.icarusrises.caseyellowanalysis.services.googlevision.services.OcrService;
+import com.icarusrises.caseyellowanalysis.services.infrastrucre.RequestHandler;
 import com.icarusrises.caseyellowanalysis.services.storage.StorageService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
@@ -65,8 +65,8 @@ public class Configuration {
 
     @Bean
     @Profile("dev")
-    public OcrService ocrService() {
-        return new GoogleVisionService(configurationManager());
+    public OcrService ocrService(RequestHandler requestHandler) {
+        return new GoogleVisionService(configurationManager(), requestHandler);
     }
 
     @Bean
