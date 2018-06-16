@@ -9,7 +9,7 @@ google_vision_url : https://vision.googleapis.com/
 
 central_url: http://localhost:9080
 encryption_key: nokey
-bucket_name: case-yellow-snapshot
+bucket_name: servile-snapshots
 snapshot_dir: successful-tests/
 
 image_analyze:
