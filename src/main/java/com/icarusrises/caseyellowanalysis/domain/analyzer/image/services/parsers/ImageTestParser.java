@@ -118,7 +118,7 @@ public abstract class ImageTestParser implements SpeedTestParser {
             return parseSpeedTest(data);
         }
 
-        throw new IllegalStateException(String.format("The number of found identifiers is not match for identifier: %s  expected: %s , actual: %s", data.get("identifier"), data.get("identifier"), identifiersSize));
+        throw new IllegalArgumentException(String.format("The number of found identifiers is not match for identifier: %s  expected: %s , actual: %s", data.get("identifier"), data.get("identifier"), identifiersSize));
     }
 
 }
