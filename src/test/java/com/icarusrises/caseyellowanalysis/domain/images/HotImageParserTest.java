@@ -319,6 +319,15 @@ public class HotImageParserTest {
         assertEquals(String.valueOf(20.77), String.valueOf(hotImageParser.parseSpeedTest(map)));
     }
 
+    @Test (expected = SpeedTestParserException.class)
+    public void parseSpeedTest26() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_26).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(100.84), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
     @Test
     @Ignore
     public void parseSpeedTest77() throws Exception {

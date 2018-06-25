@@ -3,6 +3,7 @@ package com.icarusrises.caseyellowanalysis.domain.analyzer.image.services;
 import com.icarusrises.caseyellowanalysis.commons.FileUtils;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.AnalyzedImage;
 import com.icarusrises.caseyellowanalysis.exceptions.AnalyzeException;
+import com.icarusrises.caseyellowanalysis.exceptions.SpeedTestParserException;
 import com.icarusrises.caseyellowanalysis.queues.model.ImageDetails;
 import com.icarusrises.caseyellowanalysis.queues.services.MessageProducerService;
 import com.icarusrises.caseyellowanalysis.queues.model.MessageType;
@@ -82,7 +83,7 @@ public class ImageAnalyzerServiceImpl implements ImageAnalyzerService {
 
             return new AnalyzedImage(result);
 
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | SpeedTestParserException e) {
             logger.error(String.format("Failed to analyze image: %s", e.getMessage()), e);
             return AnalyzedImage.AnalyzedImageFailure(e.getMessage());
         }
