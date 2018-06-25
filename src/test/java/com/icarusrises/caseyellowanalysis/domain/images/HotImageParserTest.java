@@ -33,8 +33,26 @@ public class HotImageParserTest {
     private static final String HOT_IMG_LOCATION_5 = "/images/hot_5_screenshot.PNG";
     private static final String HOT_IMG_LOCATION_6 = "/images/hot_6_screenshot.PNG";
     private static final String HOT_IMG_LOCATION_7 = "/images/hot_7_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_8 = "/images/hot_8_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_9 = "/images/hot_9_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_10 = "/images/hot_10_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_11 = "/images/hot_11_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_12 = "/images/hot_12_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_13 = "/images/hot_13_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_14 = "/images/hot_14_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_15 = "/images/hot_15_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_16 = "/images/hot_16_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_17 = "/images/hot_17_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_18 = "/images/hot_18_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_19 = "/images/hot_19_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_20 = "/images/hot_20_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_21 = "/images/hot_21_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_22 = "/images/hot_22_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_23 = "/images/hot_23_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_24 = "/images/hot_24_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_25 = "/images/hot_25_screenshot.PNG";
+    private static final String HOT_IMG_LOCATION_26 = "/images/hot_26_screenshot.PNG";
     private static final String HOT_IMG_LOCATION_7__ = "/images/hot_start_button_1_screenshot.PNG";
-    private static final String HIGH_RESOLUTION = "/images/admin-C4FA059FB3DC9972ADAC0810B2E7DD7B-hot.png";
 
     private HotImageParser hotImageParser;
 
@@ -130,16 +148,179 @@ public class HotImageParserTest {
         assertEquals(String.valueOf(38.92), String.valueOf(hotImageParser.parseSpeedTest(map)));
     }
 
-    @Test
+    @Test (expected = SpeedTestParserException.class)
     public void parseSpeedTest7() throws Exception {
         Map<String, Object> map = new HashMap<>();
         GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_7).getAbsolutePath());
         map.put("file", googleVisionRequest);
 
-        assertEquals(String.valueOf(101.21), String.valueOf(hotImageParser.parseSpeedTest(map)));
+        hotImageParser.parseSpeedTest(map);
+    }
+
+    @Test (expected = SpeedTestParserException.class)
+    public void parseSpeedTest8() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_8).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(101.73), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test (expected = SpeedTestParserException.class)
+    public void parseSpeedTest9() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_9).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        hotImageParser.parseSpeedTest(map);
     }
 
     @Test
+    public void parseSpeedTest10() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_10).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(62.16), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest11() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_11).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(62.16), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest12() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_12).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(62.16), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest13() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_13).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(62.16), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest14() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_14).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(62.16), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test (expected = SpeedTestParserException.class)
+    public void parseSpeedTest15() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_15).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        hotImageParser.parseSpeedTest(map);
+    }
+
+    @Test
+    public void parseSpeedTest16() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_16).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(41.21), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest17() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_17).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(41.21), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest18() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_18).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(22.21), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest19() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_19).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(21.17), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest20() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_20).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(23.02), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest21() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_21).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(18.69), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest22() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_22).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(14.09), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest23() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_23).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(19.01), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest24() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_24).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(19.93), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    public void parseSpeedTest25() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_25).getAbsolutePath());
+        map.put("file", googleVisionRequest);
+
+        assertEquals(String.valueOf(20.77), String.valueOf(hotImageParser.parseSpeedTest(map)));
+    }
+
+    @Test
+    @Ignore
     public void parseSpeedTest77() throws Exception {
         Map<String, Object> map = new HashMap<>();
         GoogleVisionRequest googleVisionRequest = new GoogleVisionRequest(getImgFromResources(HOT_IMG_LOCATION_7__).getAbsolutePath());
