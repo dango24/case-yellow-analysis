@@ -1,5 +1,6 @@
 package com.icarusrises.caseyellowanalysis.domain.analyzer.image.services.parsers;
 
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.WordData;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.image.services.ImageAnalyzerService;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.image.services.SpeedTestParser;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.image.services.SpeedTestParserSupplier;
@@ -16,7 +17,6 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +32,7 @@ public abstract class ImageTestParser implements SpeedTestParser {
     private Logger logger = Logger.getLogger(ImageTestParser.class);
 
     protected static final String NEGATIVE_PARSING = "parseInNegativeMode";
+    protected static final String MIS_PAIRING = "misParing";
 
     private ImageAnalyzerService imageAnalyzerService;
     private SpeedTestParserSupplier speedTestParserSupplier;
@@ -57,6 +58,10 @@ public abstract class ImageTestParser implements SpeedTestParser {
         }
 
         return imageAnalyzerService.analyzeImage(googleVisionRequest);
+    }
+
+    protected List<WordData> retrieveWordData(GoogleVisionRequest googleVisionRequest, Map<String, Object> data) throws IOException {
+        return parseImage(googleVisionRequest, String.valueOf(data.get(NEGATIVE_PARSING))).getTextAnnotations();
     }
 
     private GoogleVisionRequest convertImageToNegative(GoogleVisionRequest googleVisionRequest) {
@@ -101,19 +106,34 @@ public abstract class ImageTestParser implements SpeedTestParser {
         }
     }
 
-    protected Map<String,Object> addNegativeData(Map<String, Object> data) {
-        Map<String, Object> newData = new HashMap<>(data);
+    protected Map<String,Object> addExtraData(Map<String, Object> data) {
+        addNegativeData(data);
+        addMisParingData(data);
 
-        if (data.containsKey(NEGATIVE_PARSING)) {
-            newData.put(NEGATIVE_PARSING, "true");
-        } else {
-            newData.put(NEGATIVE_PARSING, "false");
+        return data;
+    }
+
+    private void addMisParingData(Map<String, Object> data) {
+        if (!data.containsKey(MIS_PAIRING)) {
+            data.put(MIS_PAIRING, "disable");
         }
+    }
 
-        return newData;
+    private void addNegativeData(Map<String, Object> data) {
+        if (data.containsKey(NEGATIVE_PARSING)) {
+            data.put(NEGATIVE_PARSING, "true");
+        } else {
+            data.put(NEGATIVE_PARSING, "false");
+        }
     }
 
     protected double handleCountMisMatch(Map<String, Object> data, int identifiersSize) throws IOException {
+        if (data.get(MIS_PAIRING).equals("disable")) {
+            data.put(MIS_PAIRING, "enable");
+            data.remove(NEGATIVE_PARSING);
+            return parseSpeedTest(data);
+        }
+
         if (data.get(NEGATIVE_PARSING).equals("false")) {
             return parseSpeedTest(data);
         }

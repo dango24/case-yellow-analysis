@@ -44,9 +44,17 @@ public class AnalysisController {
                                                @RequestParam("identifier")String identifier,
                                                @RequestParam("startTest")boolean startTest,
                                                @RequestBody GoogleVisionRequest visionRequest) throws AnalyzeException {
+        try {
+            if (nonNull(user)) {
+                MDC.put("correlation-id", user);
+            }
 
-        log.info("Received isDescriptionExist POST request for identifier: " + identifier);
-        return textAnalyzerService.isDescriptionExist(user, identifier, startTest, visionRequest);
+            log.info("Received isDescriptionExist POST request for identifier: " + identifier);
+            return textAnalyzerService.isDescriptionExist(user, identifier, startTest, visionRequest);
+
+        } finally {
+            MDC.remove("correlation-id");
+        }
     }
 
     @PostMapping("/parse-html")

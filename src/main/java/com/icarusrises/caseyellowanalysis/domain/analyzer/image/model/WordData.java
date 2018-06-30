@@ -2,6 +2,8 @@ package com.icarusrises.caseyellowanalysis.domain.analyzer.image.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.List;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WordData {
 
@@ -10,6 +12,15 @@ public class WordData {
     private BoundingPoly boundingPoly;
 
     public WordData() {
+    }
+
+    public WordData(String description) {
+        this.description = description;
+    }
+
+    public WordData(String description, List<Point> points) {
+        this.description = description;
+        this.boundingPoly = new BoundingPoly(points);
     }
 
     public WordData(WordData wordData) {
@@ -21,10 +32,6 @@ public class WordData {
     public WordData(WordData wordData, int index) {
         this(wordData);
         this.index = index;
-    }
-
-    public WordData(String description) {
-        this.description = description;
     }
 
     public String getDescription() {

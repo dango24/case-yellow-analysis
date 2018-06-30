@@ -2,11 +2,11 @@ package com.icarusrises.caseyellowanalysis.domain.analyzer.image.services.parser
 
 import com.icarusrises.caseyellowanalysis.commons.ImageUtils;
 import com.icarusrises.caseyellowanalysis.commons.WordUtils;
+import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.Point;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.WordData;
 import com.icarusrises.caseyellowanalysis.domain.analyzer.image.model.PinnedWord;
 import com.icarusrises.caseyellowanalysis.exceptions.SpeedTestParserException;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.GoogleVisionRequest;
-import com.icarusrises.caseyellowanalysis.services.googlevision.model.OcrResponse;
 import com.icarusrises.caseyellowanalysis.services.googlevision.model.VisionRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -47,17 +48,22 @@ public class HotImageParser extends ImageTestParser {
         double result;
         GoogleVisionRequest googleVisionRequest = (GoogleVisionRequest)data.get("file");
         List<WordData> hotIdentifiers;
-        data = addNegativeData(data);
+        data = addExtraData(data);
 
         try {
-            OcrResponse ocrResponse = parseImage(googleVisionRequest, String.valueOf(data.get(NEGATIVE_PARSING)));
+            List<WordData> wordsData = retrieveWordData(googleVisionRequest, data);
+
+            if (data.get(MIS_PAIRING).equals("enable")) {
+                addMisParingIfExist(wordsData);
+            }
+
             logger.info("successfully retrieve ocr response");
 
             hotIdentifiers =
-                    IntStream.range(0, ocrResponse.getTextAnnotations().size())
-                            .filter(index -> ocrResponse.getTextAnnotations().get(index).getDescription().equals(hotIdentifier))
-                            .mapToObj(index -> ocrResponse.getTextAnnotations().get(index))
-                            .collect(Collectors.toList());
+                    IntStream.range(0, wordsData.size())
+                             .filter(index -> wordsData.get(index).getDescription().equals(hotIdentifier))
+                             .mapToObj(index -> wordsData.get(index))
+                             .collect(Collectors.toList());
 
             if (hotIdentifiers.size() != hotIdentifierCount) {
                 handleCountMisMatch(data, hotIdentifiers.size());
@@ -66,8 +72,8 @@ public class HotImageParser extends ImageTestParser {
             PinnedWord leftPinnedWord = retrievePinnedWord(hotIdentifiers.get(0), hotIdentifiers.get(1), (leftX, rightX) -> leftX > rightX);
             PinnedWord rightPinnedWord = retrievePinnedWord(hotIdentifiers.get(0), hotIdentifiers.get(1), (leftX, rightX) -> leftX < rightX);
 
-            Pairing leftPairing = createPairing(leftPinnedWord, ocrResponse.getTextAnnotations());
-            Pairing rightPairing = createPairing(rightPinnedWord, ocrResponse.getTextAnnotations());
+            Pairing leftPairing = createPairing(leftPinnedWord, wordsData);
+            Pairing rightPairing = createPairing(rightPinnedWord, wordsData);
 
             validatePairing(leftPairing, rightPairing, googleVisionRequest.getRequests().get(0));
 
@@ -83,6 +89,25 @@ public class HotImageParser extends ImageTestParser {
             logger.error("Failed to parse image, " + e.getMessage(), e);
             throw new SpeedTestParserException("Failed to parse image, " + e.getMessage(), e);
         }
+    }
+
+    private void addMisParingIfExist(List<WordData> wordsData) {
+        List<WordData> misParing =
+                wordsData.stream()
+                         .filter(word -> word.getDescription().contains(hotIdentifier))
+                         .filter(word -> !word.getDescription().equals(hotIdentifier))
+                         .filter(word -> isMisParingWord(word))
+                         .collect(Collectors.toList());
+
+//        misParing.stream()
+//                 .map(this::createPairing)
+//                 .forEach(wordsData::addAll);
+
+    }
+
+    private boolean isMisParingWord(WordData word) {
+        String value = word.getDescription().replaceAll(hotIdentifier, "");
+        return isCreatable(value);
     }
 
     private void validatePairing(Pairing leftPairing, Pairing rightPairing, VisionRequest visionRequest) {
@@ -109,12 +134,34 @@ public class HotImageParser extends ImageTestParser {
         double diffX = Math.abs(normalLeftX - normalRightX);
         double diffY = Math.abs(normalLeftY - normalRightY);
 
-        if (diffX > 0.01 || diffY > 0.01) {
+        if (diffX > 0.1 || diffY > 0.1) {
             String errorMessage = String.format("Failed to parse image diffX or DiffY are too big, DiffX: %s DiffY: %s", diffX, diffY);
             logger.error(errorMessage);
 
             throw new SpeedTestParserException(errorMessage);
         }
+    }
+    private List<WordData> createPairing(WordData wordData) {
+        String value = wordData.getDescription().replaceAll(hotIdentifier, "");
+
+        List<Point> mbpsPoints =
+                wordData.getBoundingPoly()
+                        .getVertices()
+                        .stream()
+                        .map(point -> new Point(point.getX() -1, point.getY()))
+                        .collect(Collectors.toList());
+
+        List<Point> valuePoints =
+                wordData.getBoundingPoly()
+                        .getVertices()
+                        .stream()
+                        .map(point -> new Point(point.getX() +1, point.getY()))
+                        .collect(Collectors.toList());
+
+        WordData mbpsIdentifier = new WordData(hotIdentifier, mbpsPoints);
+        WordData valueIdentifier = new WordData(value, valuePoints);
+
+        return Arrays.asList(mbpsIdentifier, valueIdentifier);
     }
 
     private Pairing createPairing(PinnedWord pinnedWord , List<WordData> wordData) {

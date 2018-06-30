@@ -129,7 +129,7 @@ public class UserImageResolutionInfoServiceImpl implements UserImageResolutionIn
             }
 
         } catch (Exception e) {
-            log.error(String.format("Failure accrue while checking Diff between points coordinates, %s", e.getMessage()), e);
+            log.warn(String.format("Failure accrue while checking Diff between points coordinates, %s", e.getMessage()), e);
         }
     }
 }
