@@ -57,7 +57,7 @@ dynamo.region: eu-central-1
 
 
 credentials_path: /home/ec2-user/case-yellow/resources/a.out
-#credentials_path: /home/dango/Documents/case-yellow/a.out
+#credentials_path: /Users/dangolan/my_projects/resources/a.out
 #credentials_path: C:\\Users\\Dan\\Documents\\case yellow\\main.exe
 
 logging:
