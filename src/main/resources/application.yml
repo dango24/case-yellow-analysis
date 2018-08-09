@@ -14,7 +14,6 @@ snapshot_dir: successful-tests/
 
 image_analyze:
   identifiers:
-    - hot
     - bezeq
 
 # MultiPart properties
