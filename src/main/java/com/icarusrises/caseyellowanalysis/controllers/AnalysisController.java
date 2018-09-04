@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -39,6 +40,12 @@ public class AnalysisController {
         this.imageClassifierService = imageClassifierService;
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/health")
+    public String health() {
+        return "we are all good";
+    }
+
     @PostMapping("/is-description-exist")
     public DescriptionMatch isDescriptionExist(@RequestParam("user")String user,
                                                @RequestParam("identifier")String identifier,
@@ -59,7 +66,7 @@ public class AnalysisController {
 
     @PostMapping("/parse-html")
     public HTMLParserResult retrieveResultFromHtml(@RequestParam("identifier")String identifier, @RequestBody HTMLParserRequest htmlParserRequest) throws AnalyzeException {
-        log.info("Received isDescriptionExist POST request for identifier: " + identifier);
+        log.info("Received retrieve result from html POST request for identifier: " + identifier);
         return textAnalyzerService.retrieveResultFromHtml(identifier, htmlParserRequest);
     }
 

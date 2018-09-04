@@ -7,7 +7,11 @@ spring.profiles.active: prod
 # Google Vision Service
 google_vision_url : https://vision.googleapis.com/
 
-central_url: http://localhost:9080
+# Central host
+#central_url: http://localhost:9080
+central_url: http://internal-cy-internal-load-balancer-1608404301.eu-central-1.elb.amazonaws.com:9080
+
+
 encryption_key: nokey
 bucket_name: servile-snapshots
 snapshot_dir: successful-tests/
@@ -15,10 +19,6 @@ snapshot_dir: successful-tests/
 image_analyze:
   identifiers:
     - bezeq
-
-# MultiPart properties
-spring.http.multipart.max-file-size: 5MB
-spring.http.multipart.max-request-size: 20MB
 
 case.yellow.dir: /home/ec2-user/case-yellow
 inception.dir: ${case.yellow.dir}/inception_for_speedtest

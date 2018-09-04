@@ -44,7 +44,9 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
 
     @Override
     public HTMLParserResult retrieveResultFromHtml(String identifier, HTMLParserRequest htmlParserRequest) {
+        log.info(String.format("Fetch speed test non flash metadata from central for identifier: %s", identifier));
         SpeedTestNonFlashMetaData speedTestNonFlashMetaData = centralService.getSpeedTestNonFlashMetaData(identifier);
+        log.info(String.format("Successfully fetch speed test non flash metadata from central for identifier: %s", identifier));
 
         return retrieveResultFromHtml(speedTestNonFlashMetaData, htmlParserRequest.getPayload(), 1);
     }
@@ -98,7 +100,10 @@ public class TextAnalyzerServiceImp implements TextAnalyzerService {
     private DescriptionMatch fetchImageResolutionCoordinate(String identifier, boolean startTest, GoogleVisionRequest visionRequest) throws IOException {
         try {
             OcrResponse ocrResponse = ocrService.parseImage(visionRequest);
+            log.info(String.format("Fetch image resolution coordinate from central for identifier: %s", identifier));
             Set<WordIdentifier> textIdentifiers = centralService.getTextIdentifiers(identifier, startTest);
+            log.info(String.format("Successfully fetch image resolution coordinate from central for identifier: %s", identifier));
+
             return buildDescriptionMatch(textIdentifiers, ocrResponse.getTextAnnotations());
 
         } catch (Exception e) {
