@@ -42,8 +42,8 @@ public class AnalysisController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/health")
-    public String health() {
-        return "we are all good";
+    public Payload health() {
+        return new Payload("we are all good over here");
     }
 
     @PostMapping("/is-description-exist")
