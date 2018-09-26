@@ -6,8 +6,17 @@ files:
     destination: /home/ec2-user/case-yellow
 
 hooks:
+  ApplicationStop:
+    - location: scripts/upload_metabasedb_files.sh
+      timeout: 60
+      runas: ec2-user
+
   BeforeInstall:
     - location: scripts/delete_app_binary.sh
+      timeout: 60
+      runas: ec2-user
+
+    - location: scripts/download_metabasedb_files.sh
       timeout: 60
       runas: ec2-user
 
